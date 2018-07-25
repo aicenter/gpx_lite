@@ -72,10 +72,11 @@ def measure_time(func:Callable, test_dir:str, result_dir:str, result_name:str, *
         out_file.write(string)
 
 
-
 TEST_DIR = "/home/olga/Documents/GPX/load_test"
 RESULTS_DIR = "/home/olga/Documents/GPX/test_results"
 
 # measure_time(measure_load1, TEST_DIR, RESULTS_DIR,  'final_load_mine_')
 # measure_time(measure_load2, TEST_DIR, RESULTS_DIR,  'final_load_other_')
 measure_time(measure_conversion, TEST_DIR, RESULTS_DIR,  'try_except_conv_')
+
+
