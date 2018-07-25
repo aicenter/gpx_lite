@@ -4,14 +4,24 @@ from typing import Optional, Callable, List
 from collections import namedtuple
 from gpx_parser.utils import parse_time
 
+
 Point = namedtuple('Point', ['lat', 'lon', 'time'])
 
+
 class GPXTrackPoint:
+    """
+    Leaf element of gpx structure.
+
+    Attributes:
+        latitude: float
+        longitude: float
+        time:    datetime or None
+
+    """
 
     __slots__ = ('_lat', '_lon', '_time', '_strings')
 
     def __init__(self, lat:str, lon:str, time:Optional[str]=None)->None:
-        #self._strings:Tuple[str, str, Optional[str]] = (lat, lon, time)
         self._strings:Point = Point(lat, lon, time)
 
 
@@ -58,10 +68,17 @@ class GPXTrackPoint:
         return ''.join(result)
 
 
-    def time_difference(self, track_point:'GPXTrackPoint')->Optional[float]:
+    def time_difference(self,other_point:'GPXTrackPoint')->Optional[float]:
+        """
+        Computes time difference between the points, if both points has time attribute,
+        otherwise returns None.
+
+        :other_point:
+        :return:  time difference in seconds
+        """
         time1:Optional[datetime] = self.time
-        time2:Optional[datetime] = track_point.time
-        if not self.time or not track_point.time:
+        time2:Optional[datetime] =other_point.time
+        if not self.time or not other_point.time:
             return None
 
         if time1 == time2:
@@ -69,21 +86,32 @@ class GPXTrackPoint:
         delta:timedelta = time1 - time2 if time1 > time2 else time2 - time1
         return delta.total_seconds()
 
-    def speed_between(self, track_point:'GPXTrackPoint')->Optional[float]:
-        seconds:float = self.time_difference(track_point)
+    def speed_between(self,other_point:'GPXTrackPoint')->Optional[float]:
+        """
+         Computes speed betwee two points, if both points have time attribute,
+         returns None otherwise.
+         :param other_point:
+         :return: speed between the points in m/sec
+         """
+        seconds:float = self.time_difference(other_point)
         if not seconds:
             return  None
 
-        length:float = self.distance_2d(track_point)
+        length:float = self.distance_2d(other_point)
         return length / seconds
 
-    def distance_2d(self,point:'GPXTrackPoint')->float:
+    def distance_2d(self,other_point:'GPXTrackPoint')->float:
+        """
+        Computes 2d distance between two points.
+
+        :param other_point:
+        :return: distance in meters
+        """
         ONE_DEGREE:float = 1000. * 10000.8 / 90.
         coef:float = cos(self.latitude / 180. * pi)
-        x:float = self.latitude - point.latitude
-        y:float = (self.longitude - point.longitude) * coef
+        x:float = self.latitude - other_point.latitude
+        y:float = (self.longitude - other_point.longitude) * coef
         return sqrt(x * x + y * y) * ONE_DEGREE
-
 
 
 

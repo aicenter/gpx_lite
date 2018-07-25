@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Union, Optional, List, Iterator, Iterable, Tuple
-import copy as mod_copy
+from copy import deepcopy
 
 from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
 from gpx_parser.GPXTrackSegment import GPXTrackSegment as TrackSegment
@@ -9,6 +9,10 @@ from gpx_parser.GPXTrackSegment import GPXTrackSegment as TrackSegment
 class GPXTrack:
     """
 
+    Attributes:
+        name:  track name, str or None
+        number:  track number, int or None
+        segments:  list of GPXTrackSegments
     """
 
     __slots__ = ('_name', '_number', '_segments')
@@ -116,23 +120,34 @@ class GPXTrack:
 
 
     def get_duration(self)->Optional[float]:
+        """
+        Computes track duration in seconds.
+        (Difference between end of the last point in the last segment
+        and first point of the first segment in the track.)
+
+        :return: track duration in seconds
+        """
         try:
             return sum(map(lambda seg : seg.get_duration(), self._segments))
         except TypeError:
             return None
 
     def to_xml(self)->str:
+        """
+
+        :return: track as xml string
+        """
         result:List[str] = ['\n<trk>',]
         if  self._name:
             result.extend(['\n<name>',self._name,'</name>'])
         if self.number is not None:
             result.extend(['\n<number>', str(self._number), '</number>'])
-        result.extend(map(lambda s : s.to_xml(), self._segments))
+        result.extend(map(lambda seg : seg.to_xml(), self._segments))
         result +='\n</trk>'
         return ''.join(result)
 
     def clone(self):
-        return mod_copy.deepcopy(self)
+        return deepcopy(self)
 
 
 if __name__ == '__main__':

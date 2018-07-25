@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import Optional, List, Union, Iterator, Iterable, Tuple
 from math import ceil
-import copy
+from copy import deepcopy
+
+from gpx_parser.GPXTrack import GPXTrack as Track
 
 
 class GPX:
@@ -88,7 +90,7 @@ class GPX:
         :return: xml string
         """
         version:str = self.version if self.version else '1.1'
-        creator:str = self.creator if self.creator else 'gpx-lite.py'
+        creator:str = self.creator if self.creator else 'gpx_parser.py'
         version_ns:str = version.replace('.','/')
         result:List[str] = ['<?xml version="1.0" encoding="UTF-8"?>',
                             '\n<gpx xmlns="http://www.topografix.com/GPX/%s" ' % version_ns,
@@ -135,10 +137,17 @@ class GPX:
             track.reduce_points(min_distance)
 
     def length_2d(self)->float:
+        """"
+         2d lenght of the track
+        """
         return sum(map(lambda tr: tr.length_2d(), self._tracks))
 
 
     def get_time_bounds(self)->Tuple[datetime, datetime]:
+        """
+        Start and end of the track.
+        :return: (start, end)
+        """
         start_time = None
         end_time = None
 
@@ -152,6 +161,12 @@ class GPX:
         return start_time, end_time
 
     def get_bounds(self)->Tuple[float, float, float, float]:
+        """
+        Spatial bounds of the track:
+        minimal latitude, maximal latitude
+        minimal longitude, maximal longitude
+        :return: (min lat, max lat, min lon, max lon)
+        """
 
         all_points = [pt for tr in self._tracks for seg  in tr.segments for pt in seg.points]
         min_lat = min(map(lambda pt :pt.latitude, all_points))
@@ -197,9 +212,8 @@ class GPX:
                     else:
                         yield point, track_no, segment_no, point_no
 
-
     def clone(self):
-        return copy.deepcopy(self)
+        return deepcopy(self)
 
 
 if __name__ == '__main__':

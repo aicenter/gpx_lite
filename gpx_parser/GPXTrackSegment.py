@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Union, Optional, List, Iterator, Iterable, Tuple
-import copy as mod_copy
-
+from copy import deepcopy
 
 from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
 
@@ -105,7 +104,12 @@ class GPXTrackSegment:
 
 
     def get_duration(self)->Optional[float]:
+        """
+        Computes duration of the segments.
+        Returns None, if segment contains points without timestamps.
+        :return: duration of the segment, or None
 
+        """
         if len(self.points) < 2:
             return 0
 
@@ -124,7 +128,7 @@ class GPXTrackSegment:
         return ''.join(result)
 
     def clone(self):
-        return mod_copy.deepcopy(self)
+        return deepcopy(self)
 
 
 if __name__ == '__main__':

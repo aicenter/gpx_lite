@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="gpx-parser",
-    version="0.0.4",
+    name="gpx-lite",
+    version="0.0.1",
     author='Olga Kholkovskaia',
     author_email='olga.kholkovskaia@gmail.com',
     license='MIT',

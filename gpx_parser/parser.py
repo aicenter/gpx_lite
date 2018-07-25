@@ -9,6 +9,19 @@ from gpx_parser.xml_loader import load_xml
 
 
 class GPXParser:
+    """
+    Parser for gpx tracks.
+
+    Args:
+        xml_or_file:  gpx-xml string or file handler
+
+    Usage:
+
+        import gpx-lite as my_parser
+                 ...
+        gpx:GPX = my_parser.parse(gpx_file)
+
+    """
 
     __slots__ = ('gpx', 'xml')
 
@@ -34,17 +47,13 @@ class GPXParser:
             for segment in track.iterfind('trkseg'):
                 new_segment = TrackSegment()
                 for point in segment.iterfind('trkpt'):
-                   # print('New point')
                     values = point.attrib
                     try:
                         point.attrib['time'] = point.find('time').text
                     except AttributeError:
                         point.attrib['time'] = None
-                   # print('Values: ', values)
                     new_point = TrackPoint(values['lat'], values['lon'], values['time'])
                     new_segment.append(new_point)
-
-                   # print(new_point)
                 new_track.append(new_segment)
             self.gpx.append(new_track)
         return self.gpx
