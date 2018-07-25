@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import Optional, List, Union, Iterator, Iterable, Tuple
-import math as mod_math
+from math import ceil
 import copy
-from gpx_parser.GPXTrack import GPXTrack as Track
 
 
 class GPX:
@@ -89,7 +88,7 @@ class GPX:
         :return: xml string
         """
         version:str = self.version if self.version else '1.1'
-        creator:str = self.creator if self.creator else 'gpx_parser.py'
+        creator:str = self.creator if self.creator else 'gpx-lite.py'
         version_ns:str = version.replace('.','/')
         result:List[str] = ['<?xml version="1.0" encoding="UTF-8"?>',
                             '\n<gpx xmlns="http://www.topografix.com/GPX/%s" ' % version_ns,
@@ -122,7 +121,6 @@ class GPX:
 
         points_no = len(list(self.walk()))
         if max_points_no is not None and points_no <= max_points_no:
-            # No need to reduce points only if no min_distance is specified:
             if not min_distance:
                 return
 
@@ -131,7 +129,7 @@ class GPX:
         min_distance = min_distance or 0
         max_points_no = max_points_no or 1000000000
 
-        min_distance = max(min_distance, mod_math.ceil(length / float(max_points_no)))
+        min_distance = max(min_distance, ceil(length / float(max_points_no)))
 
         for track in self.tracks:
             track.reduce_points(min_distance)
@@ -206,8 +204,8 @@ class GPX:
 
 if __name__ == '__main__':
 
-    from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
-    from gpx_parser.GPXTrackSegment import GPXTrackSegment as TrackSegment
+    from .GPXTrackPoint import GPXTrackPoint as TrackPoint
+    from .GPXTrackSegment import GPXTrackSegment as TrackSegment
 
     x = "50.0164596"
     y = "14.4547907"

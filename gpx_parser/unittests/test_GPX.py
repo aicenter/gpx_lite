@@ -76,7 +76,7 @@ class TestGPX(TestCase):
         'xsi:schemaLocation="http://www.topografix.com/GPX/{} '         \
         'http://www.topografix.com/GPX/{}/gpx.xsd" '.format(version, version, version))
         result.append('version="%s" '% self.gpx.version)
-        result.append('creator="gpx_parser.py">')
+        result.append('creator="gpx-lite.py">')
         result.extend([t.to_xml() for t in self.gpx.tracks])
         result.append('\n</gpx>')
         self.assertEqual(''.join(result), self.gpx.to_xml())
