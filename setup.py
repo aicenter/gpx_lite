@@ -12,7 +12,7 @@ setup(
     description="Simple parser for gpx tracks, segments, and points with latitude, longitude, and time.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/kholkolg/gpx_parser',
+    url='https://github.com/aicenter/gpx_lite',
     download_url='https://github.com/kholkolg/gpx_parser/',
     packages=['gpx_parser'],
     install_requires=['typing>=3.6.2'],
