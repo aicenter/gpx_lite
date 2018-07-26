@@ -1,4 +1,6 @@
 name='gpx_lite'
+from typing import IO
+
 
 __all__ = ['GPX', 'GPXTrack', 'GPXTrackSegment', 'GPXTrackPoint']
 
@@ -17,4 +19,10 @@ def parse(xml_or_file)->GPX:
     from . import parser
 
     parser = parser.GPXParser(xml_or_file)
+    return parser.parse()
+
+def iterparse(io_stream:IO)->GPX:
+    from . import iterparser
+
+    parser = iterparser.GPXIterparser(io_stream)
     return parser.parse()

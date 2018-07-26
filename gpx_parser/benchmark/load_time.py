@@ -6,7 +6,8 @@ from time import process_time
 
 
 #from gpxpy.parser import GPXParser as OriginalParser
-from gpx_parser.parser import GPXParser as MyParser
+#from gpx_parser.parser import GPXParser as Parser
+from gpx_parser.iterparser import GPXIterparser as Parser
 from gpx_parser.benchmark.test_utils import  make_result_string, get_time
 from gpx_parser.GPX import  GPX
 
@@ -18,17 +19,18 @@ def timer(func:Callable)->Callable:
     @wraps(func)
     def wrapper(*args, **kwargs)->float:
         best_time = min(timeit.Timer(lambda:func(*args, **kwargs)).repeat(repeat=10, number=1))
-        print('time = ', best_time)
+        print(*args)
+        print('%.2f Mbs in %.2f seconds' %( path.getsize(*args)/MB, best_time))
         return best_time
     return wrapper
 
 
 
 @timer
-def  measure_load1(fname:str):
+def  measure_load1(fname:str)->None:
     with open(fname, 'r') as xml_file:
-        parser =  MyParser(xml_file)
-    parser.parse()
+        parser =  Parser(xml_file)
+        parser.parse()
 
 
 # @timer
@@ -47,13 +49,13 @@ def convert_values(gpx_content:GPX):
 
 def measure_conversion(fname:str):
     with open(fname, 'r') as xml_file:
-        parser = MyParser(xml_file)
+        parser = Parser(xml_file)
         gpx = parser.parse()
         return convert_values(gpx)
 
 
 
-def measure_time(func:Callable, test_dir:str, result_dir:str, result_name:str, *args):
+def measure_time(func:Callable, test_dir:str, result_dir:str, result_name:str):
 
     filenames:List[str] = [path.join(test_dir, fn) for fn in listdir(test_dir)]
     filenames.sort(key=lambda fn: path.getsize(fn))
@@ -75,7 +77,8 @@ def measure_time(func:Callable, test_dir:str, result_dir:str, result_name:str, *
 TEST_DIR = "/home/olga/Documents/GPX/load_test"
 RESULTS_DIR = "/home/olga/Documents/GPX/test_results"
 
-measure_time(measure_load1, TEST_DIR, RESULTS_DIR,  'floats_')
+#measure_time(measure_load1, TEST_DIR, RESULTS_DIR,  'iterparser1_')
+measure_load1("/home/olga/Documents/GPX/traces-raw.gpx") # time =  5.3
 #measure_time(measure_load2, TEST_DIR, RESULTS_DIR,  'final_load_other_')
 #measure_time(measure_conversion, TEST_DIR, RESULTS_DIR,  'try_except_conv_')
 
