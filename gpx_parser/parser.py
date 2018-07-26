@@ -52,7 +52,7 @@ class GPXParser:
                         point.attrib['time'] = point.find('time').text
                     except AttributeError:
                         point.attrib['time'] = None
-                    new_point = TrackPoint(values['lat'], values['lon'], values['time'])
+                    new_point = TrackPoint(float(values['lat']), float(values['lon']), values['time'])
                     new_segment.append(new_point)
                 new_track.append(new_segment)
             self.gpx.append(new_track)
