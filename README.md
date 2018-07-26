@@ -1,11 +1,14 @@
 # gpx-lite
 
-Simple parser for  loading basic information about track points from .gpx files.
-Inside the gpx tag parser only extracts trk, trkseg, and trkpt tags.
-All other tags are ignored.
-Resulting GPX structure is a container with track list. Each track is in it's turn a list of segments, and segment is
-a list of track points, the leaf elements of the structure.
-GPX, GPXTrack, an GPXTrackSegment support most of the list methods.
+Simple parser for gps tracks, based on
+https://pypi.org/project/gpxpy/
+
+Gpx-lite is a simplified version of gpxpy, made to parse (and serialize back to xml)
+data about tracks, track segments, and track points from  trk, trkseg, and trkpt tags.
+All other tags are ignored. Resulting GPX structure contains tracks list. 
+Each track, in it's turn, is a list of segments, and segment is a list 
+of track points, the leaf elements of the structure. For track points only latitude, 
+longitude, and time are parsed. 
 
 
 ### Prerequisites
