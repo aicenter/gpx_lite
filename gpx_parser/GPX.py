@@ -148,15 +148,8 @@ class GPX:
         Start and end of the track.
         :return: (start, end)
         """
-        start_time = None
-        end_time = None
-
-        for track in self.tracks:
-            track_start_time, track_end_time = track.get_time_bounds()
-            if not start_time:
-                start_time = track_start_time
-            if track_end_time:
-                end_time = track_end_time
+        start_time:datetime = self._tracks[0][0][0].time
+        end_time:datetime = self._tracks[-1][-1][-1].time
 
         return start_time, end_time
 
@@ -218,15 +211,15 @@ class GPX:
 
 if __name__ == '__main__':
 
-    from .GPXTrackPoint import GPXTrackPoint as TrackPoint
-    from .GPXTrackSegment import GPXTrackSegment as TrackSegment
+    from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
+    from gpx_parser.GPXTrackSegment import GPXTrackSegment as TrackSegment
 
-    x = "50.0164596"
-    y = "14.4547907"
-    p1 = TrackPoint(x, y, '2017-11-22T07:03:36Z')
-    p2 = TrackPoint(y, x)
-    p3 = TrackPoint(y, y, '2617-11-13T08:11:09Z')
-    p4 = TrackPoint(x, x)
+    x = 50.0164596
+    y = 14.4547907
+    p1 = TrackPoint(x, y, '2017-11-22T11:03:36Z')
+    p2 = TrackPoint(y, x,'2017-11-22T08:03:36Z')
+    p3 = TrackPoint(y,y, '2017-11-13T05:11:09Z')
+    p4 = TrackPoint(x, x, '2017-11-22T09:03:36Z')
     seg1 = TrackSegment([p1, p2, p3])
     seg2 = TrackSegment([p2, p3, p4])
     seg3 = TrackSegment([p4, p1])

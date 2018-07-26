@@ -71,7 +71,7 @@ class GPXTrackSegment:
 
     def length_2d(self)->float:
 
-        return sum(map(lambda t :t[0].distance_2d(t[1]),
+        return sum(map(lambda p :p[0].distance_2d(p[1]),
                        zip(self.points[1:],
                            self.points[:-1])))
 
@@ -82,17 +82,8 @@ class GPXTrackSegment:
         return GPXTrackSegment(part_1), GPXTrackSegment(part_2)
 
 
-    def get_time_bounds(self)->Tuple[Optional[datetime], Optional[datetime]]:
-        start_time = None
-        end_time = None
-
-        for point in self.points:
-            if point.time:
-                if not start_time:
-                    start_time = point.time
-                if point.time:
-                    end_time = point.time
-        return start_time, end_time
+    def get_time_bounds(self)->Tuple[datetime, datetime]:
+        return self._points[0].time, self._points[-1].time
 
     def get_bounds(self)->Tuple[float, float,float, float]:
         min_lat:float = min(map(lambda pt : pt.latitude, self.points))
@@ -103,27 +94,22 @@ class GPXTrackSegment:
         return min_lat, max_lat, min_lon, max_lon
 
 
-    def get_duration(self)->Optional[float]:
+    def get_duration(self)->float:
         """
         Computes duration of the segments.
-        Returns None, if segment contains points without timestamps.
-        :return: duration of the segment, or None
+
+        :return: duration in seconds.
 
         """
         if len(self.points) < 2:
             return 0
 
-        first:TrackPoint = self.points[0]
-        last:TrackPoint = self.points[-1]
-        if not first.time or not last.time:
-            print('Time data is missing')
-            return None
-
-        return (last.time - first.time).total_seconds()
+        start, end = self.get_time_bounds()
+        return (end - start).total_seconds()
 
     def to_xml(self)->str:
         result:List[str] = ['\n<trkseg>',]
-        result.extend(map(lambda p : p.to_xml(), self._points))
+        result.extend(map(lambda pt : pt.to_xml(), self._points))
         result.append('\n</trkseg>')
         return ''.join(result)
 
@@ -133,12 +119,12 @@ class GPXTrackSegment:
 
 if __name__ == '__main__':
 
-    x = "50.0164596"
-    y =  "14.4547907"
+    x = 50.0164596
+    y =  14.4547907
     p1 = TrackPoint(x, y, '2017-11-22T07:03:36Z')
-    p2 = TrackPoint(y, x)
     p3 = TrackPoint(y,y, '2617-11-13T08:11:09Z')
-    p4 = TrackPoint(x, x)
+    p2 = TrackPoint(x, x, '2017-12-02T07:03:36Z')
+    p4 = TrackPoint(y,x, '1717-11-13T08:11:09Z')
     seg = GPXTrackSegment()
     print('Empty segment: ', seg)
     seg.append(p1)

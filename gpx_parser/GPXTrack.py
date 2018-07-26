@@ -90,21 +90,14 @@ class GPXTrack:
             seg.reduce_points(min_distance)
 
     def remove_empty(self)->None:
-        self._segments = [s for s in filter(lambda s : len(s) > 0, self._segments)]
+        self._segments = [seg for seg in filter(lambda s : len(s) > 0, self._segments)]
 
     def length_2d(self)->float:
         return sum(map(lambda seg : seg.length_2d(), self._segments ))
 
     def get_time_bounds(self)->Tuple[datetime, datetime]:
-        start_time = None
-        end_time = None
-
-        for track_segment in self.segments:
-            point_start_time, point_end_time = track_segment.get_time_bounds()
-            if not start_time and point_start_time:
-                start_time = point_start_time
-            if point_end_time:
-                end_time = point_end_time
+        start_time:datetime = self._segments[0][0].time
+        end_time:datetime = self._segments[-1][-1].time
 
         return start_time, end_time
 
@@ -119,7 +112,7 @@ class GPXTrack:
         return min_lat, max_lat, min_lon, max_lon
 
 
-    def get_duration(self)->Optional[float]:
+    def get_duration(self)->float:
         """
         Computes track duration in seconds.
         (Difference between end of the last point in the last segment
@@ -127,10 +120,8 @@ class GPXTrack:
 
         :return: track duration in seconds
         """
-        try:
-            return sum(map(lambda seg : seg.get_duration(), self._segments))
-        except TypeError:
-            return None
+        return sum(map(lambda seg : seg.get_duration(), self._segments))
+
 
     def to_xml(self)->str:
         """
@@ -154,12 +145,12 @@ if __name__ == '__main__':
 
     from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
 
-    x = "50.0164596"
-    y =  "14.4547907"
-    p1 = TrackPoint(x, y, '2017-11-22T07:03:36Z')
-    p2 = TrackPoint(y, x)
-    p3 = TrackPoint(y,y, '2617-11-13T08:11:09Z')
-    p4 = TrackPoint(x, x)
+    x = 50.0164596
+    y =  14.4547907
+    p1 = TrackPoint(x, y, '2017-11-22T11:03:36Z')
+    p2 = TrackPoint(y, x,'2017-11-22T08:03:36Z')
+    p3 = TrackPoint(y,y, '2017-11-13T05:11:09Z')
+    p4 = TrackPoint(x, x, '2017-11-22T09:03:36Z')
     seg1 = TrackSegment([p1, p2, p3])
     seg2 = TrackSegment([p2, p3, p4])
     track = GPXTrack('800003627_337', '0')
