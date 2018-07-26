@@ -1,6 +1,6 @@
 from math import cos, pi, sqrt
 from datetime import datetime,timedelta
-from typing import Optional, Callable, List
+from typing import Optional, Callable, List, Union
 from collections import namedtuple
 from gpx_parser.utils import parse_time
 
@@ -19,51 +19,40 @@ class GPXTrackPoint:
 
     """
 
-    __slots__ = ('_lat', '_lon', '_time', '_strings')
+    __slots__ = ('_lat', '_lon', '_time')
 
-    def __init__(self, lat:str, lon:str, time:Optional[str]=None)->None:
-        self._strings:Point = Point(lat, lon, time)
-
+    def __init__(self, lat:float, lon:float, time:Optional[str]=None)->None:
+        self._lat:float = lat
+        self._lon:float = lon
+        self._time:Optional[str] = time
 
     def __repr__(self)->str:
-        return '<GPXTrackPoint(%s, %s, %s)>'% self._strings
+        return '<GPXTrackPoint(%f, %f, %s)>'% (self._lat, self._lon, self._time)
 
     def __str__(self)->str:
-        return 'trkpt:%s %s %s'% self._strings
+        return 'trkpt:%s %s %s'%  (self._lat, self._lon, self._time)
 
     @property
     def latitude(self)->float:
-        try:
-            return self._lat
-        except AttributeError:
-            self._lat:float = float(self._strings.lat)
         return self._lat
 
     @property
     def longitude(self) -> float:
-        try:
-            return self._lon
-        except AttributeError:
-            self._lon: float = float(self._strings.lon)
         return self._lon
 
 
     @property
     def time(self, converter:Callable = parse_time)-> Optional[datetime]:
         try:
-            return self._time
-        except AttributeError:
-            if self._strings.time:
-                self._time:Optional[datetime] = converter(self._strings.time)
-            else:
-                self._time:Optional[datetime]  = None
-        return self._time
+            return converter(self._time)
+        except (TypeError, ValueError):
+            return None
+
 
     def to_xml(self)->str:
-        result:List[str] = ['\n<trkpt lat="', self._strings.lat,
-                           '" lon="', self._strings.lon, '">']
+        result:List[str] = ['\n<trkpt lat="%f" lon="%f">'% (self._lat,self._lon),]
         if  self.time:
-            result.extend(['\n<time>', self._strings.time, '</time>'])
+            result.extend(['\n<time>', self._time, '</time>'])
         result.append('\n</trkpt>')
         return ''.join(result)
 
@@ -116,13 +105,13 @@ class GPXTrackPoint:
 
 
 if __name__ == '__main__':
-    p0 = GPXTrackPoint('70.016978', '41.3749454', '2016-12-22T11:50:02Z')
+    p0 = GPXTrackPoint(70.016978, 41.3749454, '2016-12-22T11:50:02Z')
     print('p0: point with time: ',p0)
-    p1 = GPXTrackPoint('70.024596', '41.4547907','2017-02-22T07:25:02Z')
+    p1 = GPXTrackPoint(70.024596, 41.4547907,'2017-02-22T07:25:02Z')
     print('p1:point with time: ', p1)
     print('p1.latitude=%s, p1.longitude=%s, p1.time=%s'%( p1.latitude, p1.longitude, p1.time))
 
-    p2 = GPXTrackPoint('70.6978', '41.0749454')
+    p2 = GPXTrackPoint(70.6978, 41.0749454)
     print('Point without time: ',p2)
     print('p2.time=',p2.time)
 

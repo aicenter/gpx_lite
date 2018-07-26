@@ -20,21 +20,18 @@ Typing 3.6.2
 ### Examples of usage
 ```python
 import gpx_parser as parser
+from gpx_lite import GPX, GPXTrack, GPXTrackSegment, GPXTrackPoint
 
 with open('file_name', 'r') as gpx_file:
     gpx = parser.parse(gpx_file)
 print("{} tracks loaded".format(len(gpx)))
-```
 
-```
 for track in gpx:
-    print('Track with {} segments and {} points'.
-          format(len(track), track.get_points_no()))
+    print('Track with {} segments and {} points'.format(len(track), track.get_points_no()))
     for segment in track:
-        print('Segment with %s points % len(segment))
+        print('Segment with %s points' % len(segment))
         for point in segment:
             print(point)
-            
 ```
 ##### GPX
   

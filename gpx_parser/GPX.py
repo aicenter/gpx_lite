@@ -90,7 +90,7 @@ class GPX:
         :return: xml string
         """
         version:str = self.version if self.version else '1.1'
-        creator:str = self.creator if self.creator else 'gpx_parser.py'
+        creator:str = self.creator if self.creator else 'gpx-lite.py'
         version_ns:str = version.replace('.','/')
         result:List[str] = ['<?xml version="1.0" encoding="UTF-8"?>',
                             '\n<gpx xmlns="http://www.topografix.com/GPX/%s" ' % version_ns,
