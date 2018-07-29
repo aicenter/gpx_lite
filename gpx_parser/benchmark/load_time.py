@@ -6,8 +6,7 @@ from time import process_time
 
 
 #from gpxpy.parser import GPXParser as OriginalParser
-#from gpx_parser.parser import GPXParser as Parser
-from gpx_parser.iterparser import GPXIterparser as Parser
+from gpx_parser.parser import GPXParser as Parser
 from gpx_parser.benchmark.test_utils import  make_result_string, get_time
 from gpx_parser.GPX import  GPX
 
@@ -20,7 +19,7 @@ def timer(func:Callable)->Callable:
     def wrapper(*args, **kwargs)->float:
         best_time = min(timeit.Timer(lambda:func(*args, **kwargs)).repeat(repeat=10, number=1))
         print(*args)
-        print('%.2f Mbs in %.2f seconds' %( path.getsize(*args)/MB, best_time))
+        print('%.2f Mbs in %.2f seconds' %( path.getsize(args[0])/MB, best_time))
         return best_time
     return wrapper
 
@@ -31,6 +30,18 @@ def  measure_load1(fname:str)->None:
     with open(fname, 'r') as xml_file:
         parser =  Parser(xml_file)
         parser.parse()
+        #parser.iterparse()
+
+@timer
+def save(fn:str, gpx:GPX, )->None:
+    with open(fn ,'w') as fh:
+        fh.write(gpx.to_xml())
+
+def  measure_save1(fname:str)->None:
+    with open(fname, 'r') as xml_file:
+        parser =  Parser(xml_file)
+        gpx = parser.parse()
+        save(fname +'.saved.gpx', gpx )
 
 
 # @timer
@@ -78,8 +89,8 @@ TEST_DIR = "/home/olga/Documents/GPX/load_test"
 RESULTS_DIR = "/home/olga/Documents/GPX/test_results"
 
 #measure_time(measure_load1, TEST_DIR, RESULTS_DIR,  'iterparser1_')
-measure_load1("/home/olga/Documents/GPX/traces-raw.gpx") # time =  5.3
+#measure_load1("/home/olga/Documents/GPX/traces-raw.gpx") # time =  5.3
 #measure_time(measure_load2, TEST_DIR, RESULTS_DIR,  'final_load_other_')
 #measure_time(measure_conversion, TEST_DIR, RESULTS_DIR,  'try_except_conv_')
-
+measure_time(measure_save1, TEST_DIR, RESULTS_DIR, '.save_xml')
 

@@ -1,10 +1,11 @@
-from datetime import datetime
 from typing import Union, Optional, List, Iterator, Iterable, Tuple
 from copy import deepcopy
 
 from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
 from gpx_parser.GPXTrackSegment import GPXTrackSegment as TrackSegment
 
+
+from xml.etree import ElementTree as ET
 
 class GPXTrack:
     """
@@ -85,43 +86,8 @@ class GPXTrack:
     def remove(self,item:TrackSegment):
         self._segments.remove(item)
 
-    def reduce_points(self, min_distance:float)->None:
-        for seg in self._segments:
-            seg.reduce_points(min_distance)
-
     def remove_empty(self)->None:
         self._segments = [seg for seg in filter(lambda s : len(s) > 0, self._segments)]
-
-    def length_2d(self)->float:
-        return sum(map(lambda seg : seg.length_2d(), self._segments ))
-
-    def get_time_bounds(self)->Tuple[datetime, datetime]:
-        start_time:datetime = self._segments[0][0].time
-        end_time:datetime = self._segments[-1][-1].time
-
-        return start_time, end_time
-
-    def get_bounds(self)->Tuple[float, float, float, float]:
-
-        all_points = [p for seg  in self._segments for p in seg.points]
-        min_lat = min(map(lambda pt :pt.latitude, all_points))
-        max_lat = max(map(lambda pt :pt.latitude, all_points))
-        min_lon = min(map(lambda pt :pt.longitude, all_points))
-        max_lon = max(map(lambda pt :pt.longitude, all_points))
-
-        return min_lat, max_lat, min_lon, max_lon
-
-
-    def get_duration(self)->float:
-        """
-        Computes track duration in seconds.
-        (Difference between end of the last point in the last segment
-        and first point of the first segment in the track.)
-
-        :return: track duration in seconds
-        """
-        return sum(map(lambda seg : seg.get_duration(), self._segments))
-
 
     def to_xml(self)->str:
         """

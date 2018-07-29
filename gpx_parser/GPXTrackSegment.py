@@ -1,7 +1,6 @@
-from datetime import datetime
-from typing import Union, Optional, List, Iterator, Iterable, Tuple
+from typing import Union, Optional, List, Iterator, Iterable
 from copy import deepcopy
-
+from xml.etree import ElementTree as ET
 from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
 
 
@@ -59,54 +58,6 @@ class GPXTrackSegment:
         """
         return len(self._points)
 
-
-    def reduce_points(self, min_distance:float)->None:
-        reduced_points = [self.points[0],]
-        for point in self.points[1:]:
-            distance = reduced_points[-1].distance_2d(point)
-            if distance >= min_distance:
-                reduced_points.append(point)
-        self.points = reduced_points
-
-
-    def length_2d(self)->float:
-
-        return sum(map(lambda p :p[0].distance_2d(p[1]),
-                       zip(self.points[1:],
-                           self.points[:-1])))
-
-
-    def split(self, point_no:int)->('GPXTrackSegment','GPXTrackSegment'):
-        part_1 = self.points[:point_no + 1]
-        part_2 = self.points[point_no + 1:]
-        return GPXTrackSegment(part_1), GPXTrackSegment(part_2)
-
-
-    def get_time_bounds(self)->Tuple[datetime, datetime]:
-        return self._points[0].time, self._points[-1].time
-
-    def get_bounds(self)->Tuple[float, float,float, float]:
-        min_lat:float = min(map(lambda pt : pt.latitude, self.points))
-        max_lat:float = max(map(lambda pt : pt.latitude, self.points))
-        min_lon:float = min(map(lambda pt : pt.longitude, self.points))
-        max_lon:float = max(map(lambda pt : pt.longitude, self.points))
-
-        return min_lat, max_lat, min_lon, max_lon
-
-
-    def get_duration(self)->float:
-        """
-        Computes duration of the segments.
-
-        :return: duration in seconds.
-
-        """
-        if len(self.points) < 2:
-            return 0
-
-        start, end = self.get_time_bounds()
-        return (end - start).total_seconds()
-
     def to_xml(self)->str:
         result:List[str] = ['\n<trkseg>',]
         result.extend(map(lambda pt : pt.to_xml(), self._points))
@@ -133,7 +84,6 @@ if __name__ == '__main__':
     print('0th element: ', seg[0])
     print('Segment with 3 points: ', seg)
     print('seg.points: ', seg.points)
-    print('bounds %s %s %s %s'% seg.get_bounds())
 
     print('Point in segment: %s, not in segment: %s ' % (
         p1 in seg, p4 in seg))
@@ -142,5 +92,4 @@ if __name__ == '__main__':
     print('Iterator:')
     for p in seg:
         print(p)
-    print('Split 1: %s 2 %s'% seg.split(1))
 

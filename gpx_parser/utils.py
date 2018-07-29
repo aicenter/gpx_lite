@@ -1,6 +1,7 @@
 from datetime import datetime
-from typing import Callable, Dict, Optional
-
+from typing import Callable
+from re import sub
+import xml.etree.ElementTree as ET
 
 
 def parse_time(string:str, parser:Callable = datetime.strptime)->datetime:
@@ -13,22 +14,24 @@ def parse_time(string:str, parser:Callable = datetime.strptime)->datetime:
     raise ValueError('Invalid time format in string %s' % string)
 
 
-def to_xml(tag:str, attributes:Optional[Dict[str, str]]=None,
-           content:Optional[str]=None)->str:
-    attributes = attributes or {}
-    result = []
-    result.append('\n' +'<{0}'.format(tag))
-
-    if attributes:
-        for k,v in attributes.items():
-            result.append(' %s="%s"' % (k, v))
-
-    if content is None:
-        result.append('/>')
-
-    result.append('>%s</%s>' % (content, tag))
+def load_xml(xml_string:str, parser:Callable=ET.fromstring) ->ET.ElementTree:
+    """
+    :param xml_string: xml represented as a single string
+    :return: ElementTree
+    """
+    xml_string = sub(r'\sxmlns="[^"]+"', '', xml_string , count=1)
+    root = parser(xml_string)
+    return root
 
 
-    return ''.join(result)
+
+
+if __name__ == '__main__':
+
+    fn = '/home/olga/Documents/GPX/load_test/traces10.gpx'
+    with open(fn, 'r') as xml_file:
+        root = load_xml(xml_file.read())
+        print(root)
+
 
 

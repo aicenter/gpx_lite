@@ -1,7 +1,14 @@
 from datetime import datetime
 from typing import Optional, List, Union, Iterator, Iterable, Tuple
-from math import ceil
 from copy import deepcopy
+from xml.etree import ElementTree as ET
+# gpx = ET.Element('gpx')
+# trk = ET.SubElement(gpx, 'trk')
+# trkseg = ET.SubElement(trk, 'trkseg')
+# trkpt = ET.SubElement(trkseg, 'trkpt', {'lat': '12.34566', 'lon':'84.36736'})
+# time = ET.SubElement(trkpt, 'time')
+# time.text =  '2016-12-22T11:50:02.234Z'
+# ET.dump(indent(gpx))
 
 from gpx_parser.GPXTrack import GPXTrack as Track
 
@@ -105,76 +112,6 @@ class GPX:
         return  ''.join(result)
 
 
-
-    def reduce_points(self, max_points_no=None, min_distance=None)->None:
-        """
-        Reduces the number of points in  gpx instance.
-
-        :param max_points_no: maximum number of points to be left
-        :param min_distance: minimum distance between two points in meters
-        :return:
-        """
-
-        if max_points_no is None and min_distance is None:
-            raise ValueError("Either max_point_no or min_distance must be supplied")
-
-        if max_points_no is not None and max_points_no < 2:
-            raise ValueError("max_points_no must be greater than or equal to 2")
-
-        points_no = len(list(self.walk()))
-        if max_points_no is not None and points_no <= max_points_no:
-            if not min_distance:
-                return
-
-        length = self.length_2d()
-
-        min_distance = min_distance or 0
-        max_points_no = max_points_no or 1000000000
-
-        min_distance = max(min_distance, ceil(length / float(max_points_no)))
-
-        for track in self.tracks:
-            track.reduce_points(min_distance)
-
-    def length_2d(self)->float:
-        """"
-         2d lenght of the track
-        """
-        return sum(map(lambda tr: tr.length_2d(), self._tracks))
-
-
-    def get_time_bounds(self)->Tuple[datetime, datetime]:
-        """
-        Start and end of the track.
-        :return: (start, end)
-        """
-        start_time:datetime = self._tracks[0][0][0].time
-        end_time:datetime = self._tracks[-1][-1][-1].time
-
-        return start_time, end_time
-
-    def get_bounds(self)->Tuple[float, float, float, float]:
-        """
-        Spatial bounds of the track:
-        minimal latitude, maximal latitude
-        minimal longitude, maximal longitude
-        :return: (min lat, max lat, min lon, max lon)
-        """
-
-        all_points = [pt for tr in self._tracks for seg  in tr.segments for pt in seg.points]
-        min_lat = min(map(lambda pt :pt.latitude, all_points))
-        max_lat = max(map(lambda pt :pt.latitude, all_points))
-        min_lon = min(map(lambda pt :pt.longitude, all_points))
-        max_lon = max(map(lambda pt :pt.longitude, all_points))
-
-        return min_lat, max_lat, min_lon, max_lon
-
-
-    def get_points_no(self):
-        return sum(map(lambda tr: tr.get_points_no(), self._tracks))
-
-
-
     def walk(self, only_points=False):
         """
         Generator used to iterates through points in GPX file
@@ -243,6 +180,8 @@ if __name__ == '__main__':
     print('Iterator')
     for t in gpx:
         print(t)
+
+    print(gpx.to_xml3())
 
     gpx.remove(track3)
     print('.tracks after 1 track removed: ', gpx.tracks)

@@ -1,28 +1,25 @@
 name='gpx_lite'
 from typing import IO
-
+from . import GPX
 
 __all__ = ['GPX', 'GPXTrack', 'GPXTrackSegment', 'GPXTrackPoint']
 
-from . import GPX
 
-
-def parse(xml_or_file)->GPX:
+def parse(file:IO)->GPX:
 
     """
-    Wrapper fo GPXParser.parse() method.
+    Wrapper fo GPXParser.parse()  and
+    GPXParser.parse() methods.
 
-
-    :param xml_or_file: xml string or file handler
+    :param file: file handler
     :return: gpx loaded from xml
     """
     from . import parser
-
-    parser = parser.GPXParser(xml_or_file)
+    parser= parser.GPXParser(file)
     return parser.parse()
 
-def iterparse(io_stream:IO)->GPX:
-    from . import iterparser
+def iterparse(file:IO)->GPX:
+    from . import parser
 
-    parser = iterparser.GPXIterparser(io_stream)
-    return parser.parse()
+    parser = parser.GPXParser(file)
+    return parser.iterparse()
