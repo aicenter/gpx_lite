@@ -87,10 +87,8 @@ if __name__ == '__main__':
     print('0th element: ', seg[0])
     print('Segment with 3 points: ', seg)
     print('seg.points: ', seg.points)
-
     print('Point in segment: %s, not in segment: %s ' % (
         p1 in seg, p4 in seg))
-
     print('Slice: ', seg[1:2:2])
     print('Iterator:')
     for p in seg:

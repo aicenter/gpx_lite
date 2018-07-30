@@ -1,4 +1,4 @@
-from time import  strftime
+from time import strftime
 
 
 def make_result_string(num:int, *args)->str:

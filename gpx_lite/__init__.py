@@ -1,7 +1,6 @@
 from typing import IO
 from .gpx import GPX
 
-
 name = ' gpx_lite '
 __all__ = ['gpx.py', 'gpxtrack.py', 'gpxtracksegment.py', 'gpxtrackpoint.py']
 

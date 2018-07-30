@@ -9,7 +9,6 @@ class GPX:
     Container for GPXTracks. This class represents the root element of gpx file.
     All constructor arguments are optional.
 
-
     Attributes:
         version: version of gpx schema
         creator: application that created the gpx
@@ -95,12 +94,12 @@ class GPX:
         creator: str = self.creator if self.creator else 'gpx-lite.py'
         version_ns: str = version.replace('.', '/')
         result: List[str] = ['<?xml version="1.0" encoding="UTF-8"?>',
-                            '\n<gpx xmlns="http://www.topografix.com/GPX/%s" ' % version_ns,
-                            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ',
-                            'xsi:schemaLocation="http://www.topografix.com/GPX/%s ' % version_ns,
-                            'http://www.topografix.com/GPX/%s/gpx.xsd" '% version_ns,
-                            'version="%s" '% version,
-                            'creator="%s">'% creator]
+                             '\n<gpx xmlns="http://www.topografix.com/GPX/%s" ' % version_ns,
+                             'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ',
+                             'xsi:schemaLocation="http://www.topografix.com/GPX/%s ' % version_ns,
+                             'http://www.topografix.com/GPX/%s/gpx.xsd" ' % version_ns,
+                             'version="%s" ' % version,
+                             'creator="%s">' % creator]
 
         result.extend(map(lambda trk: trk.to_xml(), self.tracks))
         result.append('\n</gpx>')

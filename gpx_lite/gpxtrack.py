@@ -8,11 +8,10 @@ from gpx_lite.gpxtracksegment import GPXTrackSegment
 class GPXTrack:
     """
     Attributes:
-        name:  track name, str or None
-        number:  track number, int or None
-        segments:  list of GPXTrackSegments
+        name: track name, str or None
+        number: track number, int or None
+        segments: list of GPXTrackSegments
     """
-
     __slots__ = ('_name', '_number', '_segments')
 
     def __init__(self, name: Optional[str]=None,
@@ -105,7 +104,7 @@ class GPXTrack:
         """
         :return: track as xml string
         """
-        result:List[str] = ['\n<trk>',]
+        result: List[str] = ['\n<trk>',]
         if self._name:
             result.extend(['\n<name>',self._name,'</name>'])
         if self._number is not None:

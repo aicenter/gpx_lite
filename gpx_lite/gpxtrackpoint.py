@@ -14,7 +14,6 @@ class GPXTrackPoint:
         time:   datetime
 
     """
-
     __slots__ = ('_lat', '_lon', '_time')
 
     def __init__(self, lat: float, lon: float, time: str)->None:
@@ -57,9 +56,13 @@ class GPXTrackPoint:
 
 
 if __name__ == '__main__':
-    p0 = GPXTrackPoint(70.016978, 41.3749454, '2016-12-22T11:50:02Z')
+    p0 = GPXTrackPoint(70.016978, 41.3749454,
+                       '2016-12-22T11:50:02Z')
     print('p0: ',p0)
-    p1 = GPXTrackPoint(70.024596, 41.4547907,'2017-02-22T07:25:02Z')
+    p1 = GPXTrackPoint(70.024596, 41.4547907,
+                       '2017-02-22T07:25:02Z')
     print('p1:', p1)
-    print('p1.latitude=%s, p1.longitude=%s, p1.time=%s'%( p1.latitude, p1.longitude, p1.time))
+    print('p1.latitude=%s, p1.longitude=%s, p1.time=%s' %
+          ( p1.latitude, p1.longitude, p1.time))
+
     print(p1.to_xml())
