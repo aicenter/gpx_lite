@@ -30,13 +30,11 @@ def parse_xml(xml_string: str, parser: Callable=ET.fromstring)->ET.ElementTree:
     :return: ElementTree
     """
     #remove namespace from the root of gpx, so it won't appear in tags.
-    xml_string = sub(r'\sxmlns="[^"]+"', '', xml_string , count=1)
+    xml_string = sub(r'\sxmlns="[^"]+"', '', xml_string, count=1)
     return parser(xml_string)
 
 
-
 if __name__ == '__main__':
-
     fn = '/home/olga/Documents/GPX/load_test/traces10.gpx'
     with open(fn, 'r') as xml_file:
         root = parse_xml(xml_file.read())

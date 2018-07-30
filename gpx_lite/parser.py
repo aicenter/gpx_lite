@@ -82,7 +82,8 @@ class GPXParser:
                 time = elem.text
             elif 'trkpt' in elem.tag:
                 points.append(GPXTrackPoint(float(elem.attrib['lat']),
-                                         float(elem.attrib['lon']), time))
+                                            float(elem.attrib['lon']),
+                                            time))
             elif 'trkseg' in elem.tag:
                 segments.append(GPXTrackSegment([p for p in points]))
                 points.clear()
@@ -92,7 +93,6 @@ class GPXParser:
             elem.clear()
         self._gpx = GPX(tracks=tracks)
         return self._gpx
-
 
 
 if __name__ == '__main__':
