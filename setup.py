@@ -8,7 +8,7 @@ setup(
     version="0.0.2",
     author='Olga Kholkovskaia',
     author_email='olga.kholkovskaia@gmail.com',
-    license='MIT',
+    license='Apache License, Version 2.0',
     description="Simple parser for gpx tracks, segments, and points with latitude, longitude, and time.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -16,8 +16,6 @@ setup(
     packages=['gpx_lite'],
     install_requires=['typing>=3.6.2'],
     classifiers=(
-        "Programming Language :: Python :: 3.4",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ),
+        "Programming Language :: Python :: 3.4"
+     ),
 )

@@ -16,4 +16,11 @@ Python 3.4 or higher
 
 Typing 3.6.2
 
+### Installation
+```commandline
+pip install gpx-lite
+```
+
+
+
 
