@@ -1,9 +1,11 @@
 from typing import Union, Optional, List, Iterator, Iterable
 from copy import deepcopy
+
 from gpx_parser.gpxtrackpoint import GPXTrackPoint
 
 
 class GPXTrackSegment:
+
     __slots__ = '_points'
 
     def __init__(self, points: Optional[List[GPXTrackPoint]]=None):

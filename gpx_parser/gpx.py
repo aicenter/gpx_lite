@@ -33,7 +33,7 @@ class GPX:
     def __repr__(self)->str:
         return '<GPX [..%s tracks..]>' % len(self._tracks)
 
-    def __getitem__(self, key:Union[int, slice])-> \
+    def __getitem__(self, key: Union[int, slice])-> \
             Union[GPXTrack, List[GPXTrack]]:
 
         if isinstance(key, int):
@@ -93,7 +93,7 @@ class GPX:
         """
         version: str = self.version if self.version else '1.1'
         creator: str = self.creator if self.creator else 'gpx-lite.py'
-        version_ns: str = version.replace('.','/')
+        version_ns: str = version.replace('.', '/')
         result: List[str] = ['<?xml version="1.0" encoding="UTF-8"?>',
                             '\n<gpx xmlns="http://www.topografix.com/GPX/%s" ' % version_ns,
                             'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ',

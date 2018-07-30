@@ -1,8 +1,8 @@
-from typing import Union, Optional, List, Iterator, Iterable, Tuple
+from typing import Union, Optional, List, Iterator, Iterable
 from copy import deepcopy
 
-from gpx_parser.gpxtrackpoint import GPXTrackPoint as TrackPoint
-from gpx_parser.gpxtracksegment import GPXTrackSegment as TrackSegment
+from gpx_parser.gpxtrackpoint import GPXTrackPoint
+from gpx_parser.gpxtracksegment import GPXTrackSegment
 
 
 class GPXTrack:
@@ -17,10 +17,10 @@ class GPXTrack:
 
     def __init__(self, name: Optional[str]=None,
                  number: Optional[str]=None,
-                 segments: Optional[List[TrackSegment]]=None):
+                 segments: Optional[List[GPXTrackSegment]]=None):
         self._name: Optional[str] = name
         self._number: Optional[int] = int(number) if number else None
-        self._segments: List[TrackSegment] = segments if segments else []
+        self._segments: List[GPXTrackSegment] = segments if segments else []
 
     def __repr__(self)->str:
         return '<GPXTrack %s %s [.%s segments.]>' \
@@ -29,11 +29,11 @@ class GPXTrack:
     def __len__(self)->int:
         return len(self._segments)
 
-    def __iter__(self)->Iterator[TrackSegment]:
+    def __iter__(self)->Iterator[GPXTrackSegment]:
         return iter(self._segments)
 
-    def __getitem__(self, key: int)->Union[TrackSegment,
-                                           List[TrackSegment]]:
+    def __getitem__(self, key: int)->Union[GPXTrackSegment,
+                                           List[GPXTrackSegment]]:
         if isinstance(key, int):
             return self._segments[key]
         elif isinstance(key,slice):
@@ -42,7 +42,7 @@ class GPXTrack:
             raise TypeError('Index must be int, not {}'.
                             format(type(key).__name__))
 
-    def __contains__(self, item: TrackSegment)->bool:
+    def __contains__(self, item: GPXTrackSegment)->bool:
         return item in self._segments
 
     @property
@@ -62,15 +62,15 @@ class GPXTrack:
         self._number = int(num)
 
     @property
-    def segments(self)->List[TrackSegment]:
+    def segments(self)->List[GPXTrackSegment]:
         return self._segments
 
     @segments.setter
-    def segments(self, segments: List[TrackSegment])->None:
+    def segments(self, segments: List[GPXTrackSegment])->None:
         self._segments = segments
 
     @property
-    def points(self)->List[TrackPoint]:
+    def points(self)->List[GPXTrackPoint]:
         """
 
         :return: list of all points from all the segments
@@ -84,13 +84,13 @@ class GPXTrack:
         """
         return sum(map(lambda seg: len(seg), self._segments))
 
-    def append(self, item: TrackSegment):
+    def append(self, item: GPXTrackSegment):
         self._segments.append(item)
 
-    def extend(self, items: Iterable[TrackSegment]):
+    def extend(self, items: Iterable[GPXTrackSegment]):
         self._segments.extend(items)
 
-    def remove(self,item: TrackSegment):
+    def remove(self,item: GPXTrackSegment):
         self._segments.remove(item)
 
     def remove_empty(self)->None:
@@ -123,18 +123,18 @@ if __name__ == '__main__':
     from gpx_parser.gpxtrackpoint import GPXTrackPoint as TrackPoint
 
     x = 50.0164596
-    y =  14.4547907
+    y = 14.4547907
     p1 = TrackPoint(x, y, '2017-11-22T11:03:36Z')
     p2 = TrackPoint(y, x,'2017-11-22T08:03:36Z')
     p3 = TrackPoint(y,y, '2017-11-13T05:11:09Z')
     p4 = TrackPoint(x, x, '2017-11-22T09:03:36Z')
-    seg1 = TrackSegment([p1, p2, p3])
-    seg2 = TrackSegment([p2, p3, p4])
+    seg1 = GPXTrackSegment([p1, p2, p3])
+    seg2 = GPXTrackSegment([p2, p3, p4])
     track = GPXTrack('800003627_337', '0')
     print('Empty track with name and number: ', track)
     track.append(seg1)
     print('1 segment added, len = ',  len(track))
-    seg3 = TrackSegment([p4, p1])
+    seg3 = GPXTrackSegment([p4, p1])
     track.extend([seg2, seg3])
     print('2 more segments added, len: ', len(track))
     print('Points in all segments: ', track.get_points_no())
