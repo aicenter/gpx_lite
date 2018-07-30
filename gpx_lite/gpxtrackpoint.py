@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Callable, List
 
-from gpx_parser.utils import parse_time
+from gpx_lite.utils import parse_time
 
 
 class GPXTrackPoint:

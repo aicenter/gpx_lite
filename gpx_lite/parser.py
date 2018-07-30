@@ -1,11 +1,11 @@
 from typing import IO, Callable, List
 from xml.etree.ElementTree import ElementTree, iterparse
 
-from gpx_parser.gpx import GPX
-from gpx_parser.gpxtrack import GPXTrack
-from gpx_parser.gpxtrackpoint import GPXTrackPoint
-from gpx_parser.gpxtracksegment import GPXTrackSegment
-from gpx_parser.utils import parse_xml
+from gpx_lite.gpx import GPX
+from gpx_lite.gpxtrack import GPXTrack
+from gpx_lite.gpxtrackpoint import GPXTrackPoint
+from gpx_lite.gpxtracksegment import GPXTrackSegment
+from gpx_lite.utils import parse_xml
 
 
 class GPXParser:

@@ -1,7 +1,7 @@
 from typing import Optional, List, Union, Iterator, Iterable
 from copy import deepcopy
 
-from gpx_parser.gpxtrack import GPXTrack
+from gpx_lite.gpxtrack import GPXTrack
 
 
 class GPX:
@@ -112,8 +112,8 @@ class GPX:
 
 if __name__ == '__main__':
 
-    from gpx_parser.gpxtrackpoint import GPXTrackPoint as TrackPoint
-    from gpx_parser.gpxtracksegment import GPXTrackSegment as TrackSegment
+    from gpx_lite.gpxtrackpoint import GPXTrackPoint as TrackPoint
+    from gpx_lite.gpxtracksegment import GPXTrackSegment as TrackSegment
 
     x = 50.0164596
     y = 14.4547907

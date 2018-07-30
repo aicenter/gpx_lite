@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="gpx-lite",
-    version="0.0.1",
+    version="0.0.2",
     author='Olga Kholkovskaia',
     author_email='olga.kholkovskaia@gmail.com',
     license='MIT',
@@ -13,8 +13,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/aicenter/gpx_lite',
-    download_url='https://github.com/kholkolg/gpx_parser/',
-    packages=['gpx_parser'],
+    packages=['gpx_lite'],
     install_requires=['typing>=3.6.2'],
     classifiers=(
         "Programming Language :: Python :: 3.4",

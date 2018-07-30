@@ -1,7 +1,7 @@
 from typing import Union, Optional, List, Iterator, Iterable
 from copy import deepcopy
 
-from gpx_parser.gpxtrackpoint import GPXTrackPoint
+from gpx_lite.gpxtrackpoint import GPXTrackPoint
 
 
 class GPXTrackSegment:

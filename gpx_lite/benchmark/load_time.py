@@ -6,9 +6,9 @@ from time import process_time
 
 
 #from gpxpy.parser import GPXParser as OriginalParser
-from gpx_parser.parser import GPXParser as Parser
-from gpx_parser.benchmark.test_utils import  make_result_string, get_time
-from gpx_parser.gpx import  GPX
+from gpx_lite.parser import GPXParser as Parser
+from gpx_lite.benchmark.test_utils import  make_result_string, get_time
+from gpx_lite.gpx import  GPX
 
 
 MB = 1000*1000
