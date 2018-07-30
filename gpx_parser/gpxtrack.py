@@ -5,11 +5,8 @@ from gpx_parser.gpxtrackpoint import GPXTrackPoint as TrackPoint
 from gpx_parser.gpxtracksegment import GPXTrackSegment as TrackSegment
 
 
-from xml.etree import ElementTree as ET
-
 class GPXTrack:
     """
-
     Attributes:
         name:  track name, str or None
         number:  track number, int or None
@@ -18,13 +15,16 @@ class GPXTrack:
 
     __slots__ = ('_name', '_number', '_segments')
 
-    def __init__(self, name:Optional[str]=None, number:Optional[str]=None, segments:Optional[List[TrackSegment]]=None):
-        self._name:Optional[str] = name
-        self._number:Optional[int] = int(number) if number else None
-        self._segments:List[TrackSegment] = segments if segments else []
+    def __init__(self, name: Optional[str]=None,
+                 number: Optional[str]=None,
+                 segments: Optional[List[TrackSegment]]=None):
+        self._name: Optional[str] = name
+        self._number: Optional[int] = int(number) if number else None
+        self._segments: List[TrackSegment] = segments if segments else []
 
     def __repr__(self)->str:
-        return 'GPXTrack(%s  %s)(%s)(segments=%s)' % (self._name, self._number, len(self._segments), self._segments)
+        return '<GPXTrack %s %s [.%s segments.]>' \
+               % (self._name, self._number, len(self._segments))
 
     def __len__(self)->int:
         return len(self._segments)
@@ -32,25 +32,25 @@ class GPXTrack:
     def __iter__(self)->Iterator[TrackSegment]:
         return iter(self._segments)
 
-    def __getitem__(self, key:int)->Union[TrackSegment, List[TrackSegment]]:
+    def __getitem__(self, key: int)->Union[TrackSegment,
+                                           List[TrackSegment]]:
         if isinstance(key, int):
             return self._segments[key]
         elif isinstance(key,slice):
             return self._segments[key.start:key.stop:key.step]
         else:
-            raise TypeError('Index must be int, not {}'.format(type(key).__name__))
+            raise TypeError('Index must be int, not {}'.
+                            format(type(key).__name__))
 
-
-    def __contains__(self, item:TrackSegment)->bool:
+    def __contains__(self, item: TrackSegment)->bool:
         return item in self._segments
-
 
     @property
     def name(self)->str:
         return self._name
 
     @name.setter
-    def name(self, name:str):
+    def name(self, name: str):
         self._name = name
 
     @property
@@ -58,7 +58,7 @@ class GPXTrack:
         return self._number
 
     @number.setter
-    def number(self,num:str):
+    def number(self, num: str):
         self._number = int(num)
 
     @property
@@ -66,44 +66,55 @@ class GPXTrack:
         return self._segments
 
     @segments.setter
-    def segments(self, segments:List[TrackSegment])->None:
+    def segments(self, segments: List[TrackSegment])->None:
         self._segments = segments
 
     @property
     def points(self)->List[TrackPoint]:
+        """
+
+        :return: list of all points from all the segments
+        """
         return [pt for seg in self._segments for pt in seg.points]
 
-
     def get_points_no(self)->int:
-        return sum(map(lambda s : len(s), self._segments))
+        """
 
-    def append(self, item:TrackSegment):
+        :return: total number of points in all segments
+        """
+        return sum(map(lambda seg: len(seg), self._segments))
+
+    def append(self, item: TrackSegment):
         self._segments.append(item)
 
-    def extend(self, items:Iterable[TrackSegment]):
+    def extend(self, items: Iterable[TrackSegment]):
         self._segments.extend(items)
 
-    def remove(self,item:TrackSegment):
+    def remove(self,item: TrackSegment):
         self._segments.remove(item)
 
     def remove_empty(self)->None:
-        self._segments = [seg for seg in filter(lambda s : len(s) > 0, self._segments)]
+        """
+        Removes empty segmets from the track
+        :return:
+        """
+        self._segments = [seg for seg in filter(
+            lambda seg: len(seg) > 0, self._segments)]
 
     def to_xml(self)->str:
         """
-
         :return: track as xml string
         """
         result:List[str] = ['\n<trk>',]
-        if  self._name:
+        if self._name:
             result.extend(['\n<name>',self._name,'</name>'])
-        if self.number is not None:
+        if self._number is not None:
             result.extend(['\n<number>', str(self._number), '</number>'])
-        result.extend(map(lambda seg : seg.to_xml(), self._segments))
-        result +='\n</trk>'
+        result.extend(map(lambda seg: seg.to_xml(), self._segments))
+        result += '\n</trk>'
         return ''.join(result)
 
-    def clone(self):
+    def clone(self)->'GPXTrack':
         return deepcopy(self)
 
 

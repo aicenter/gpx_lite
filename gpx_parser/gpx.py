@@ -1,16 +1,7 @@
-from datetime import datetime
-from typing import Optional, List, Union, Iterator, Iterable, Tuple
+from typing import Optional, List, Union, Iterator, Iterable
 from copy import deepcopy
-from xml.etree import ElementTree as ET
-# gpx = ET.Element('gpx')
-# trk = ET.SubElement(gpx, 'trk')
-# trkseg = ET.SubElement(trk, 'trkseg')
-# trkpt = ET.SubElement(trkseg, 'trkpt', {'lat': '12.34566', 'lon':'84.36736'})
-# time = ET.SubElement(trkpt, 'time')
-# time.text =  '2016-12-22T11:50:02.234Z'
-# ET.dump(indent(gpx))
 
-from gpx_parser.gpxtrack import GPXTrack as Track
+from gpx_parser.gpxtrack import GPXTrack
 
 
 class GPX:
@@ -27,43 +18,47 @@ class GPX:
 
     __slots__ = ('_version', '_creator', '_tracks')
 
-    def __init__(self, version:Optional[str]=None, creator:Optional[str]=None, tracks:Optional[List[Track]]=None):
+    def __init__(self, version: Optional[str]=None,
+                 creator: Optional[str]=None,
+                 tracks: Optional[List[GPXTrack]]=None):
         """
         :param version: version of gpx schema
         :param creator: application that created the data
         :param tracks: list of tracks
         """
-        self._version:Optional[str] = version
-        self._creator:Optional[str] = creator
-        self._tracks:List[Track] = tracks if tracks else []
-
+        self._version: Optional[str] = version
+        self._creator: Optional[str] = creator
+        self._tracks: List[GPXTrack] = tracks if tracks else []
 
     def __repr__(self)->str:
         return '<GPX [..%s tracks..]>' % len(self._tracks)
 
-    def __getitem__(self, key:Union[int, slice])-> Union[Track,List[Track]]:
+    def __getitem__(self, key:Union[int, slice])-> \
+            Union[GPXTrack, List[GPXTrack]]:
+
         if isinstance(key, int):
             return self._tracks[key]
         elif isinstance(key, slice):
             return self._tracks[key.start:key.stop:key.step]
         else:
-            raise TypeError('Index must be int, not {}'.format(type(key).__name__))
+            raise TypeError('Index must be int, not {}'.
+                            format(type(key).__name__))
 
     def __len__(self)->int:
         return len(self._tracks)
 
-    def __contains__(self, item:Track)->bool:
+    def __contains__(self, item: GPXTrack)->bool:
         return item in self._tracks
 
-    def __iter__(self)-> Iterator[Track]:
+    def __iter__(self)->Iterator[GPXTrack]:
         return iter(self._tracks)
 
     @property
-    def tracks(self)->List[Track]:
+    def tracks(self)->List[GPXTrack]:
         return self._tracks
 
     @tracks.setter
-    def tracks(self, items:List[Track]):
+    def tracks(self, items: List[GPXTrack]):
         self._tracks = items
 
     @property
@@ -71,7 +66,7 @@ class GPX:
         return self._version
 
     @version.setter
-    def version(self, version:str):
+    def version(self, version: str):
         self._version = version
 
     @property
@@ -79,16 +74,16 @@ class GPX:
         return self._creator
 
     @creator.setter
-    def creator(self, creator:str):
+    def creator(self, creator: str):
         self._creator = creator
 
-    def append(self, item:Track):
+    def append(self, item: GPXTrack):
         self._tracks.append(item)
 
-    def extend(self, items:Iterable[Track]):
+    def extend(self, items:Iterable[GPXTrack]):
         self._tracks.extend(items)
 
-    def remove(self, item:Track):
+    def remove(self, item: GPXTrack):
         self._tracks.remove(item)
 
     def to_xml(self)->str:
@@ -96,10 +91,10 @@ class GPX:
         Converts gpx instance to xml.
         :return: xml string
         """
-        version:str = self.version if self.version else '1.1'
-        creator:str = self.creator if self.creator else 'gpx-lite.py'
-        version_ns:str = version.replace('.','/')
-        result:List[str] = ['<?xml version="1.0" encoding="UTF-8"?>',
+        version: str = self.version if self.version else '1.1'
+        creator: str = self.creator if self.creator else 'gpx-lite.py'
+        version_ns: str = version.replace('.','/')
+        result: List[str] = ['<?xml version="1.0" encoding="UTF-8"?>',
                             '\n<gpx xmlns="http://www.topografix.com/GPX/%s" ' % version_ns,
                             'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ',
                             'xsi:schemaLocation="http://www.topografix.com/GPX/%s ' % version_ns,
@@ -107,42 +102,11 @@ class GPX:
                             'version="%s" '% version,
                             'creator="%s">'% creator]
 
-        result.extend(map(lambda trk : trk.to_xml(), self.tracks))
+        result.extend(map(lambda trk: trk.to_xml(), self.tracks))
         result.append('\n</gpx>')
-        return  ''.join(result)
+        return ''.join(result)
 
-
-    def walk(self, only_points=False):
-        """
-        Generator used to iterates through points in GPX file
-
-        Parameters
-        ----------
-        only_point s: boolean
-            Only yield points while walking
-
-        Yields
-        ----------
-        point : GPXTrackPoint
-            Point in the track
-        track_no : integer
-            Index of track containint point. This is suppressed if only_points
-            is True.
-        segment_no : integer
-            Index of segment containint point. This is suppressed if only_points
-            is True.
-        point_no : integer
-            Index of point. This is suppressed if only_points is True.
-        """
-        for track_no, track in enumerate(self.tracks):
-            for segment_no, segment in enumerate(track.segments):
-                for point_no, point in enumerate(segment.points):
-                    if only_points:
-                        yield point
-                    else:
-                        yield point, track_no, segment_no, point_no
-
-    def clone(self):
+    def clone(self)->'GPX':
         return deepcopy(self)
 
 
@@ -160,9 +124,9 @@ if __name__ == '__main__':
     seg1 = TrackSegment([p1, p2, p3])
     seg2 = TrackSegment([p2, p3, p4])
     seg3 = TrackSegment([p4, p1])
-    track1 = Track('800003627_337', '0', [seg1, seg2, seg3])
-    track2 = Track('800003627_908', None, [seg2, seg3])
-    track3 = Track(None, '2', [TrackSegment([p4])])
+    track1 = GPXTrack('800003627_337', '0', [seg1, seg2, seg3])
+    track2 = GPXTrack('800003627_908', None, [seg2, seg3])
+    track3 = GPXTrack(None, '2', [TrackSegment([p4])])
     print('Track with name, number, 3 segments: ',track1)
     print('Track with name,no number, 2 segments: ',track2)
     print('Track with no name, number, 1 segment: ', track3)

@@ -2,10 +2,10 @@ from typing import IO, Callable, List
 from xml.etree.ElementTree import ElementTree, iterparse
 
 from gpx_parser.gpx import GPX
-from gpx_parser.gpxtrack import GPXTrack as Track
-from gpx_parser.gpxtrackpoint import GPXTrackPoint as TrackPoint
-from gpx_parser.gpxtracksegment import GPXTrackSegment as TrackSegment
-from gpx_parser.utils import load_xml
+from gpx_parser.gpxtrack import GPXTrack
+from gpx_parser.gpxtrackpoint import GPXTrackPoint
+from gpx_parser.gpxtracksegment import GPXTrackSegment
+from gpx_parser.utils import parse_xml
 
 
 class GPXParser:
@@ -19,53 +19,61 @@ class GPXParser:
 
         import gpx-lite as parser
                  ...
-        gpx:GPX = parser.parse(gpx_file)
-        gpx:GPX = parser.iterparse(gpx_file)
-
+        with open(filename, 'r') as gpx_file:
+            gpx:GPX = parser.parse(gpx_file)
+                  or
+            gpx:GPX = parser.iterparse(gpx_file)
 
     """
 
-    __slots__ = ('gpx', 'source')
+    __slots__ = ('_gpx', '_source')
 
-    def __init__(self, file:IO):
-        self.source: IO = file
-        self.gpx:GPX = GPX()
+    def __init__(self, file: IO)->None:
+        self._source: IO = file
+        self._gpx: GPX = GPX()
 
-    def parse(self, loader:Callable = load_xml) ->GPX:
-        xml:ElementTree = loader(self.source.read())
-        for track in xml.iterfind('trk'):
-            new_track = Track()
+    def parse(self, xml_parser: Callable = parse_xml)->GPX:
+        """
+
+        :param xml_parser:
+        :return:
+        """
+        xml: ElementTree = xml_parser(self._source.read())
+        for trk in xml.iterfind('trk'):
+            new_track = GPXTrack()
             try:
-                new_track.name = track.find('name').text
+                new_track.name = trk.find('name').text
             except AttributeError:
                 pass
             try:
-                new_track.number = track.find('number').text
+                new_track.number = trk.find('number').text
             except AttributeError:
                 pass
-            for segment in track.iterfind('trkseg'):
-                new_segment = TrackSegment()
-                for point in segment.iterfind('trkpt'):
+            for seg in trk.iterfind('trkseg'):
+                new_segment = GPXTrackSegment()
+                for point in seg.iterfind('trkpt'):
                     values = point.attrib
                     try:
                         point.attrib['time'] = point.find('time').text
                     except AttributeError:
                         point.attrib['time'] = None
-                    new_point = TrackPoint(float(values['lat']), float(values['lon']), values['time'])
+                    new_point = GPXTrackPoint(float(values['lat']),
+                                              float(values['lon']),
+                                              values['time'])
                     new_segment.append(new_point)
                 new_track.append(new_segment)
-            self.gpx.append(new_track)
-        return self.gpx
+            self._gpx.append(new_track)
+        return self._gpx
 
-    def iterparse(self) ->GPX:
-        points:List[TrackPoint] = []
-        segments:List[TrackSegment]= []
-        tracks:List[Track] = []
-        name:str = ''
-        number:str = ''
-        time:str = ''
+    def iterparse(self)->GPX:
+        points: List[GPXTrackPoint] = []
+        segments: List[GPXTrackSegment]= []
+        tracks: List[GPXTrack] = []
+        name: str = ''
+        number: str = ''
+        time: str = ''
 
-        for _, elem in iterparse(self.source):
+        for _, elem in iterparse(self._source):
             if 'name' in elem.tag:
                 name = elem.text
             elif 'number' in elem.tag:
@@ -73,17 +81,17 @@ class GPXParser:
             elif 'time' in elem.tag:
                 time = elem.text
             elif 'trkpt' in elem.tag:
-                points.append(TrackPoint(float(elem.attrib['lat']),
+                points.append(GPXTrackPoint(float(elem.attrib['lat']),
                                          float(elem.attrib['lon']), time))
             elif 'trkseg' in elem.tag:
-                segments.append(TrackSegment([p for p in points]))
+                segments.append(GPXTrackSegment([p for p in points]))
                 points.clear()
             elif 'trk' in elem.tag:
-                tracks.append(Track(name, number, [s for s in segments]))
+                tracks.append(GPXTrack(name, number, [s for s in segments]))
                 segments.clear()
             elem.clear()
-        self.gpx = GPX(tracks=tracks)
-        return self.gpx
+        self._gpx = GPX(tracks=tracks)
+        return self._gpx
 
 
 
@@ -93,7 +101,6 @@ if __name__ == '__main__':
         parser = GPXParser(xml_file)
         gpx = parser.parse()
     print(gpx)
-    print(len(gpx))
     for track in gpx:
         print(track)
         for seg in track:
