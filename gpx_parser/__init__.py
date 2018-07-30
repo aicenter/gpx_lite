@@ -1,11 +1,11 @@
 name='gpx_lite'
 from typing import IO
-from . import GPX
+from . import gpx
 
-__all__ = ['GPX', 'GPXTrack', 'GPXTrackSegment', 'GPXTrackPoint']
+__all__ = ['gpx.py', 'gpxtrack.py', 'gpxtracksegment.py', 'gpxtrackpoint.py']
 
 
-def parse(file:IO)->GPX:
+def parse(file:IO)->gpx:
 
     """
     Wrapper fo GPXParser.parse()  and
@@ -18,7 +18,7 @@ def parse(file:IO)->GPX:
     parser= parser.GPXParser(file)
     return parser.parse()
 
-def iterparse(file:IO)->GPX:
+def iterparse(file:IO)->gpx:
     from . import parser
 
     parser = parser.GPXParser(file)

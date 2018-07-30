@@ -10,7 +10,7 @@ from xml.etree import ElementTree as ET
 # time.text =  '2016-12-22T11:50:02.234Z'
 # ET.dump(indent(gpx))
 
-from gpx_parser.GPXTrack import GPXTrack as Track
+from gpx_parser.gpxtrack import GPXTrack as Track
 
 
 class GPX:
@@ -148,8 +148,8 @@ class GPX:
 
 if __name__ == '__main__':
 
-    from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
-    from gpx_parser.GPXTrackSegment import GPXTrackSegment as TrackSegment
+    from gpx_parser.gpxtrackpoint import GPXTrackPoint as TrackPoint
+    from gpx_parser.gpxtracksegment import GPXTrackSegment as TrackSegment
 
     x = 50.0164596
     y = 14.4547907
@@ -180,8 +180,6 @@ if __name__ == '__main__':
     print('Iterator')
     for t in gpx:
         print(t)
-
-    print(gpx.to_xml3())
 
     gpx.remove(track3)
     print('.tracks after 1 track removed: ', gpx.tracks)

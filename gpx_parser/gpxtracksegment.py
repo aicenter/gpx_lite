@@ -1,7 +1,7 @@
 from typing import Union, Optional, List, Iterator, Iterable
 from copy import deepcopy
 from xml.etree import ElementTree as ET
-from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
+from gpx_parser.gpxtrackpoint import GPXTrackPoint as TrackPoint
 
 
 class GPXTrackSegment:

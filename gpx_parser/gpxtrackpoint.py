@@ -18,10 +18,10 @@ class GPXTrackPoint:
 
     __slots__ = ('_lat', '_lon', '_time')
 
-    def __init__(self, lat:float, lon:float, time:str)->None:
-        self._lat:float = lat
-        self._lon:float = lon
-        self._time:str = time
+    def __init__(self, lat: float, lon: float, time: str)->None:
+        self._lat: float = lat
+        self._lon: float = lon
+        self._time: str = time
 
     def __repr__(self)->str:
         return '<GPXTrackPoint(%f, %f, %s)>'% (self._lat, self._lon, self._time)

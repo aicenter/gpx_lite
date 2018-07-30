@@ -1,8 +1,8 @@
 from typing import Union, Optional, List, Iterator, Iterable, Tuple
 from copy import deepcopy
 
-from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
-from gpx_parser.GPXTrackSegment import GPXTrackSegment as TrackSegment
+from gpx_parser.gpxtrackpoint import GPXTrackPoint as TrackPoint
+from gpx_parser.gpxtracksegment import GPXTrackSegment as TrackSegment
 
 
 from xml.etree import ElementTree as ET
@@ -109,7 +109,7 @@ class GPXTrack:
 
 if __name__ == '__main__':
 
-    from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
+    from gpx_parser.gpxtrackpoint import GPXTrackPoint as TrackPoint
 
     x = 50.0164596
     y =  14.4547907

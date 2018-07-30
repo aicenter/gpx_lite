@@ -1,10 +1,10 @@
 from typing import IO, Callable, List
 from xml.etree.ElementTree import ElementTree, iterparse
 
-from gpx_parser.GPX import GPX
-from gpx_parser.GPXTrack import GPXTrack as Track
-from gpx_parser.GPXTrackPoint import GPXTrackPoint as TrackPoint
-from gpx_parser.GPXTrackSegment import GPXTrackSegment as TrackSegment
+from gpx_parser.gpx import GPX
+from gpx_parser.gpxtrack import GPXTrack as Track
+from gpx_parser.gpxtrackpoint import GPXTrackPoint as TrackPoint
+from gpx_parser.gpxtracksegment import GPXTrackSegment as TrackSegment
 from gpx_parser.utils import load_xml
 
 
@@ -65,7 +65,7 @@ class GPXParser:
         number:str = ''
         time:str = ''
 
-        for event, elem in iterparse(self.source):
+        for _, elem in iterparse(self.source):
             if 'name' in elem.tag:
                 name = elem.text
             elif 'number' in elem.tag:
@@ -76,10 +76,10 @@ class GPXParser:
                 points.append(TrackPoint(float(elem.attrib['lat']),
                                          float(elem.attrib['lon']), time))
             elif 'trkseg' in elem.tag:
-                segments.append(TrackSegment(points))
+                segments.append(TrackSegment([p for p in points]))
                 points.clear()
             elif 'trk' in elem.tag:
-                tracks.append(Track(name, number, segments))
+                tracks.append(Track(name, number, [s for s in segments]))
                 segments.clear()
             elem.clear()
         self.gpx = GPX(tracks=tracks)
@@ -103,6 +103,7 @@ if __name__ == '__main__':
                 print(pt.latitude, pt.longitude,pt.time)
 
     fn2 = '/home/olga/Documents/GPX/traces-raw.gpx'
-    with open(fn2, 'r') as io:
-        parser = GPXParser(io)
-        print(parser.iterparse())
+    with open(fn2, 'r') as fh:
+        parser = GPXParser(fh)
+        gpx = parser.iterparse()
+    print(gpx)
