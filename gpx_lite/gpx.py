@@ -4,6 +4,8 @@ from copy import deepcopy
 from gpx_lite.gpxtrack import GPXTrack
 
 
+from xml.etree import ElementTree as ET
+
 class GPX:
     """
     Container for GPXTracks. This class represents the root element of gpx file.
@@ -85,11 +87,7 @@ class GPX:
     def remove(self, item: GPXTrack):
         self._tracks.remove(item)
 
-    def to_xml(self)->str:
-        """
-        Converts gpx instance to xml.
-        :return: xml string
-        """
+    def to_xml(self, fh):
         version: str = self.version if self.version else '1.1'
         creator: str = self.creator if self.creator else 'gpx-lite.py'
         version_ns: str = version.replace('.', '/')
@@ -100,10 +98,12 @@ class GPX:
                              'http://www.topografix.com/GPX/%s/gpx.xsd" ' % version_ns,
                              'version="%s" ' % version,
                              'creator="%s">' % creator]
+        for string in result:
+            fh.write(string)
 
-        result.extend(map(lambda trk: trk.to_xml(), self.tracks))
-        result.append('\n</gpx>')
-        return ''.join(result)
+        for track in self._tracks:
+            track.to_xml(fh)
+        fh.write('\n</gpx>')
 
     def clone(self)->'GPX':
         return deepcopy(self)

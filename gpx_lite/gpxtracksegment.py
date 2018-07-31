@@ -2,7 +2,7 @@ from typing import Union, Optional, List, Iterator, Iterable
 from copy import deepcopy
 
 from gpx_lite.gpxtrackpoint import GPXTrackPoint
-
+from xml.etree import ElementTree as ET
 
 class GPXTrackSegment:
 
@@ -57,15 +57,14 @@ class GPXTrackSegment:
         """
         return len(self._points)
 
-    def to_xml(self)->str:
-        """
+    def to_xml(self, fh):
+        fh.write('\n<trkseg>')
+        for pt in self._points:
+            pt.to_xml(fh)
+        fh.write('\n</trkseg>')
 
-        :return: segment as xml string
-        """
-        result: List[str] = ['\n<trkseg>',]
-        result.extend(map(lambda pt: pt.to_xml(), self._points))
-        result.append('\n</trkseg>')
-        return ''.join(result)
+    def sort_by_time(self)->None:
+        self._points.sort(key=lambda pt: pt._time)
 
     def clone(self):
         return deepcopy(self)

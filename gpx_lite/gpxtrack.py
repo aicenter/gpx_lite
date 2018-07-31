@@ -4,6 +4,7 @@ from copy import deepcopy
 from gpx_lite.gpxtrackpoint import GPXTrackPoint
 from gpx_lite.gpxtracksegment import GPXTrackSegment
 
+from xml.etree import ElementTree as ET
 
 class GPXTrack:
     """
@@ -15,10 +16,16 @@ class GPXTrack:
     __slots__ = ('_name', '_number', '_segments')
 
     def __init__(self, name: Optional[str]=None,
-                 number: Optional[str]=None,
+                 number: Optional[Union[str, int]]=None,
                  segments: Optional[List[GPXTrackSegment]]=None):
         self._name: Optional[str] = name
-        self._number: Optional[int] = int(number) if number else None
+        if isinstance(number, int):
+            self._number: Optional[int] = number
+        else:
+            try:
+                self._number: Optional[int] = int(number)
+            except TypeError:
+                self._number: Optional[int] = None
         self._segments: List[GPXTrackSegment] = segments if segments else []
 
     def __repr__(self)->str:
@@ -100,18 +107,17 @@ class GPXTrack:
         self._segments = [seg for seg in filter(
             lambda seg: len(seg) > 0, self._segments)]
 
-    def to_xml(self)->str:
-        """
-        :return: track as xml string
-        """
-        result: List[str] = ['\n<trk>',]
+    def to_xml(self, fh):
+        result: List[str] = ['\n<trk>', ]
         if self._name:
-            result.extend(['\n<name>',self._name,'</name>'])
+            result.extend(['\n<name>', self._name, '</name>'])
         if self._number is not None:
             result.extend(['\n<number>', str(self._number), '</number>'])
-        result.extend(map(lambda seg: seg.to_xml(), self._segments))
-        result += '\n</trk>'
-        return ''.join(result)
+        for string in result:
+            fh.write(string)
+        for seg in self._segments:
+            seg.to_xml(fh)
+        fh.write('\n</trk>')
 
     def clone(self)->'GPXTrack':
         return deepcopy(self)

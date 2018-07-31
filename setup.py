@@ -14,7 +14,7 @@ setup(
     long_description_content_type="text/markdown",
     url='https://github.com/aicenter/gpx_lite',
     packages=['gpx_lite'],
-    install_requires=['typing>=3.6.2'],
+    install_requires=['typing>=3.6.2','tqdm'],
     classifiers=(
         "Programming Language :: Python :: 3.4"
      ),

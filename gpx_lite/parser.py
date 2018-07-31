@@ -113,4 +113,6 @@ if __name__ == '__main__':
     with open(fn2, 'r') as fh:
         parser = GPXParser(fh)
         gpx = parser.iterparse()
+    with open('/home/olga/Documents/GPX/save_raw.gpx', 'w') as fh2:
+        print(gpx.to_xml(fh2))
     print(gpx)
