@@ -1,10 +1,8 @@
-from typing import Optional, List, Union, Iterator, Iterable
+from typing import Optional, List, Union, Iterator, Iterable, IO
 from copy import deepcopy
 
 from gpx_lite.gpxtrack import GPXTrack
 
-
-from xml.etree import ElementTree as ET
 
 class GPX:
     """
@@ -87,7 +85,7 @@ class GPX:
     def remove(self, item: GPXTrack):
         self._tracks.remove(item)
 
-    def to_xml(self, fh):
+    def to_xml(self, fh: IO)->None:
         version: str = self.version if self.version else '1.1'
         creator: str = self.creator if self.creator else 'gpx-lite.py'
         version_ns: str = version.replace('.', '/')

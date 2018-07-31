@@ -1,10 +1,9 @@
-from typing import Union, Optional, List, Iterator, Iterable
+from typing import Union, Optional, List, Iterator, Iterable, IO
 from copy import deepcopy
 
 from gpx_lite.gpxtrackpoint import GPXTrackPoint
 from gpx_lite.gpxtracksegment import GPXTrackSegment
 
-from xml.etree import ElementTree as ET
 
 class GPXTrack:
     """
@@ -107,7 +106,7 @@ class GPXTrack:
         self._segments = [seg for seg in filter(
             lambda seg: len(seg) > 0, self._segments)]
 
-    def to_xml(self, fh):
+    def to_xml(self, fh:IO)->None:
         result: List[str] = ['\n<trk>', ]
         if self._name:
             result.extend(['\n<name>', self._name, '</name>'])

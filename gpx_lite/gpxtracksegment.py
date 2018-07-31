@@ -1,8 +1,8 @@
-from typing import Union, Optional, List, Iterator, Iterable
+from typing import Union, Optional, List, Iterator, Iterable, IO
 from copy import deepcopy
 
 from gpx_lite.gpxtrackpoint import GPXTrackPoint
-from xml.etree import ElementTree as ET
+
 
 class GPXTrackSegment:
 
@@ -57,7 +57,7 @@ class GPXTrackSegment:
         """
         return len(self._points)
 
-    def to_xml(self, fh):
+    def to_xml(self, fh:IO)->None:
         fh.write('\n<trkseg>')
         for pt in self._points:
             pt.to_xml(fh)
