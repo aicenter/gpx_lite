@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="gpx-lite",
-    version="0.0.2",
+    version="0.0.3",
     author='Olga Kholkovskaia',
     author_email='olga.kholkovskaia@gmail.com',
     license='Apache License, Version 2.0',
@@ -15,7 +15,5 @@ setup(
     url='https://github.com/aicenter/gpx_lite',
     packages=['gpx_lite'],
     install_requires=['typing>=3.6.2','tqdm'],
-    classifiers=(
-        "Programming Language :: Python :: 3.4"
-     ),
+
 )

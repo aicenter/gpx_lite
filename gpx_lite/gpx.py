@@ -2,6 +2,7 @@ from typing import Optional, List, Union, Iterator, Iterable, IO
 from copy import deepcopy
 
 from gpx_lite.gpxtrack import GPXTrack
+from tqdm import tqdm
 
 
 class GPX:
@@ -98,9 +99,11 @@ class GPX:
                              'creator="%s">' % creator]
         for string in result:
             fh.write(string)
-
-        for track in self._tracks:
-            track.to_xml(fh)
+        with tqdm(total = len(self._tracks), desc="Saving gpx", unit='track') as pbar:
+        #for track in tqdm(self._tracks, total=len(self._tracks), desc="Saving gpx", unit='track'):
+            for track in self._tracks:
+                track.to_xml(fh)
+                pbar.update(1)
         fh.write('\n</gpx>')
 
     def clone(self)->'GPX':

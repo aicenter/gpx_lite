@@ -64,6 +64,7 @@ class GPXTrackSegment:
         fh.write('\n</trkseg>')
 
     def sort_by_time(self)->None:
+        #print('Sorting ', len(self._points))
         self._points.sort(key=lambda pt: pt._time)
 
     def clone(self):

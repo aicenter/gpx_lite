@@ -35,17 +35,24 @@ def read_data_from_csv(filepath: str, gpx: GPX, id_dict: Dict[str, int])->None:
 
 
 if __name__=='__main__':
-
-    dir:str = '/home/olga/Documents/GPX/csv_data_liftago'
+    dir:str = '/home/olga/Documents/GPX/csv_data_liftago2'
     filenames: List[str] = [path.join(dir, fn) for fn in listdir(dir)]
     gpx:GPX = GPX()
     id_dict:Dict[str, int] = {}
-    for fn in tqdm(filenames, total=len(filenames), desc="Loading csv..."):
-        read_data_from_csv(fn, gpx, id_dict)
+    with tqdm(filenames, total=len(filenames), desc="Loading csv", unit='files') as pbar:
+        for fn in filenames:
+            read_data_from_csv(fn, gpx, id_dict)
+            pbar.update(1)
+            pbar.set_postfix(file=path.basename(fn), refresh=False)
 
-    for tr in gpx:
-        tr[0].sort_by_time()
+    total_size = sum(map(lambda tr: len(tr), gpx))
+    with tqdm(total=total_size, desc='Sorting points in segments', unit='segment') as pbar:
+        for tr in gpx:
+            for seg in tr:
+                seg.sort_by_time()
+                pbar.update(1)
+            #tr[0].sort_by_time()
 
-    with open('/home/olga/Documents/GPX/liftago.gpx', 'w') as fh:
+    with open('/home/olga/Documents/GPX/liftago2.gpx', 'w') as fh:
         gpx.to_xml(fh)
 

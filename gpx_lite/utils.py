@@ -3,7 +3,6 @@ from typing import Callable
 from re import sub
 import xml.etree.ElementTree as ET
 
-
 def parse_time(string: str, parser: Callable = datetime.strptime)->datetime:
     """
 
@@ -23,14 +22,13 @@ def parse_time(string: str, parser: Callable = datetime.strptime)->datetime:
 
 def parse_xml(xml_string: str, parser: Callable=ET.fromstring)->ET.ElementTree:
     """
-    Helper function to read xml Element Tree from string.
+    Helper function to remove namespace and read ElementTree from string.
     
     :param xml_string: xml represented as a single string
     :param parser: function to read xml from string
     :return: ElementTree
     """
-    #remove namespace from the root of gpx, so it won't appear in tags.
-    xml_string = sub(r'\sxmlns="[^"]+"', '', xml_string, count=1)
+    xml_string = sub(r'\sxmlns="[^"]+"', '', xml_string, count=1) #otherwise ns will appear in tags
     return parser(xml_string)
 
 
