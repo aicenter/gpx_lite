@@ -54,5 +54,5 @@ if __name__=='__main__':
             #tr[0].sort_by_time()
 
     with open('/home/olga/Documents/GPX/liftago2.gpx', 'w') as fh:
-        gpx.to_xml(fh)
+        gpx.write_to_file(fh)
 

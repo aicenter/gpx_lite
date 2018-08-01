@@ -1,20 +1,19 @@
 import timeit
 from functools import wraps
 from typing import Callable, List
-from os import path, listdir
+from os import path, listdir, remove
 from time import process_time
 
 
-#from gpxpy.parser import GPXParser as OriginalParser
 from gpx_lite.parser import GPXParser as Parser
-from gpx_lite.benchmark.test_utils import  make_result_string, get_time
-from gpx_lite.gpx import  GPX
+from gpx_lite.benchmark.test_utils import make_result_string, get_time
+from gpx_lite.gpx import GPX
 
 
 MB = 1000*1000
 
 
-def timer(func:Callable)->Callable:
+def timer(func: Callable)->Callable:
     @wraps(func)
     def wrapper(*args, **kwargs)->float:
         best_time = min(timeit.Timer(lambda: func(*args, **kwargs)).repeat(repeat=10, number=1))
@@ -29,20 +28,27 @@ def measure_load1(fname: str)->None:
     with open(fname, 'r') as xml_file:
         parser = Parser(xml_file)
         parser.parse()
-        #parser.iterparse()
 
+
+@timer
+def measure_load1_iter(fname: str)->None:
+    with open(fname, 'r') as xml_file:
+        parser = Parser(xml_file)
+        parser.iterparse()
 
 @timer
 def save(fn: str, gpx: GPX, )->None:
     with open(fn, 'w') as fh:
-        fh.write(gpx.to_xml())
+        gpx.write_to_file(fh)
 
 
 def measure_save1(fname: str)->None:
     with open(fname, 'r') as xml_file:
         parser = Parser(xml_file)
         gpx = parser.parse()
-        save(fname +'.saved.gpx', gpx )
+        out_name: str = fname +'.saved.gpx',
+        save(out_name, gpx)
+        remove(out_name)
 
 
 # @timer
@@ -79,8 +85,7 @@ def measure_time(func:Callable,
     start: float = process_time()
     times: List[float] = [n for n in map(lambda name : func(name), filenames)]
     total_time:float = process_time() - start
-    print(times)
-    string:str = make_result_string(2, ['Mbs', 'Time'], sizes, times)
+    string: str = make_result_string(2, ['Mbs', 'Time'], sizes, times)
     string += '\n\n\nTotal time: {:10.2f} minutes\n'.format(total_time / 60)
     print(string)
 
@@ -92,9 +97,9 @@ def measure_time(func:Callable,
 TEST_DIR = "/home/olga/Documents/GPX/load_test"
 RESULTS_DIR = "/home/olga/Documents/GPX/test_results"
 
-#measure_time(measure_load1, TEST_DIR, RESULTS_DIR,  'iterparser1_')
+measure_time(measure_load1, TEST_DIR, RESULTS_DIR,  'tqdm_')
 #measure_load1("/home/olga/Documents/GPX/traces-raw.gpx") # time =  5.3
-#measure_time(measure_load2, TEST_DIR, RESULTS_DIR,  'final_load_other_')
+measure_time(measure_load1_iter, TEST_DIR, RESULTS_DIR,  'tqdm_iter_')
 #measure_time(measure_conversion, TEST_DIR, RESULTS_DIR,  'try_except_conv_')
-measure_time(measure_save1, TEST_DIR, RESULTS_DIR, '.save_xml')
+measure_time(measure_save1, TEST_DIR, RESULTS_DIR, 'save_xml_')
 

@@ -106,7 +106,7 @@ class GPXTrack:
         self._segments = [seg for seg in filter(
             lambda seg: len(seg) > 0, self._segments)]
 
-    def to_xml(self, fh: IO)->None:
+    def _write_to_file(self, fh: IO)->None:
         result: List[str] = ['\n<trk>', ]
         if self._name:
             result.extend(['\n<name>', self._name, '</name>'])
@@ -115,7 +115,7 @@ class GPXTrack:
         for string in result:
             fh.write(string)
         for seg in self._segments:
-            seg.to_xml(fh)
+            seg._write_to_file(fh)
         fh.write('\n</trk>')
 
     def clone(self)->'GPXTrack':

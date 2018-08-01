@@ -1,10 +1,10 @@
-from typing import IO, Callable, List, Dict
+from typing import IO, Callable, List, Dict, TextIO
 from xml.etree.ElementTree import ElementTree, iterparse
 from os import fstat
 from tqdm import tqdm
 
-from gpx_lite.gpx import GPX
-from gpx_lite.gpxtrack import GPXTrack
+
+from gpx_lite.gpx import GPX, GPXTrack
 from gpx_lite.gpxtrackpoint import GPXTrackPoint
 from gpx_lite.gpxtracksegment import GPXTrackSegment
 from gpx_lite.utils import parse_xml
@@ -33,8 +33,8 @@ class GPXParser:
 
     __slots__ = ('_gpx', '_source')
 
-    def __init__(self, file: IO)->None:
-        self._source: IO = file
+    def __init__(self, file: TextIO)->None:
+        self._source: TextIO = file
         self._gpx: GPX = GPX()
 
     def parse(self, xml_parser: Callable = parse_xml)->GPX:
@@ -47,11 +47,7 @@ class GPXParser:
         :return: gpx with loaded data
         """
         xml: ElementTree = xml_parser(self._source.read())
-        #file_size: int = fstat(self._source.fileno()).st_size
-        #total_size: int = file_size
-        #with tqdm(total=total_size, desc="Loading gpx", unit='b', unit_scale=True) as pbar:
         for trk in xml.iterfind('trk'):
-
                 new_track: GPXTrack = GPXTrack()
                 try:
                     new_track.name = trk.find('name').text
@@ -62,9 +58,9 @@ class GPXParser:
                 except AttributeError:
                     pass
                 for seg in trk.iterfind('trkseg'):
-                    new_segment:GPXTrackSegment = GPXTrackSegment()
+                    new_segment: GPXTrackSegment = GPXTrackSegment()
                     for point in seg.iterfind('trkpt'):
-                        values:Dict[str, str] = point.attrib
+                        values: Dict[str, str] = point.attrib
                         try:
                             point.attrib['time'] = point.find('time').text
                         except AttributeError:
@@ -73,7 +69,6 @@ class GPXParser:
                                                   float(values['lon']),
                                                   values['time'])
                         new_segment.append(new_point)
-                        #pbar.update(100)
                     new_track.append(new_segment)
                 self._gpx.append(new_track)
         return self._gpx
@@ -92,7 +87,7 @@ class GPXParser:
         number: str = ''
         time: str = ''
         file_size = fstat(self._source.fileno()).st_size
-        with tqdm(total = file_size, unit_scale=True, unit='b', desc="Loading gpx") as pbar:
+        with tqdm(total=file_size, unit_scale=True, unit='b', desc="Loading gpx") as pbar:
             for _, elem in iterparse(self._source):
                 if 'name' in elem.tag:
                     name = elem.text
@@ -117,12 +112,14 @@ class GPXParser:
 
 
 if __name__ == '__main__':
-    from time import  process_time
-    fn = '/home/olga/Documents/GPX/load_test/traces350.gpx'
-    with open(fn, 'r') as xml_file:
-        parser = GPXParser(xml_file)
-        gpx = parser.parse()
-    print(gpx)
+    from time import process_time
+    fn1 = '/home/olga/Documents/GPX/load_test/traces350.gpx' # 360 Mb
+    fn2 = '/home/olga/Documents/GPX/traces-raw.gpx'          # 1.3 Gb
+    fn3 = '/home/olga/Documents/GPX/liftago.gpx'             # 3.2 Gb
+    # with open(fn1, 'r') as xml_file:
+    #     parser = GPXParser(xml_file)
+    #     gpx = parser.parse()
+    # print(gpx)
     # for track in gpx:
     #     print(track)
     #     for seg in track:
@@ -131,17 +128,15 @@ if __name__ == '__main__':
     #             print(pt)
     #             print(pt.latitude, pt.longitude,pt.time)
 
-    # start = process_time()
-    # fn2 = '/home/olga/Documents/GPX/traces-raw.gpx'
-    # with open(fn2, 'r') as fh:
-    #     parser = GPXParser(fh)
-    #     gpx = parser.iterparse()
-    # print('Load gpx %.2f sec' % (process_time() - start))
-    # with open('/home/olga/Documents/GPX/save_raw.gpx', 'w') as fh2:
-    #      print(gpx.to_xml(fh2))
-    # print(process_time()-start)
-    # print(gpx)
+    start = process_time()
 
-
-# without tqdm = 98-101 sec
-# count iterations
+    with open(fn2, 'r') as fh:
+        parser = GPXParser(fh)
+        gpx = parser.iterparse()
+    print('Load gpx %.2f sec' % (process_time() - start))
+    #              ,
+    with open('/home/olga/Documents/GPX/save_raw.gpx', 'w', buffering=16*1024) as fh2:
+        print('Handler ', type(fh2))
+        print(gpx.write_to_file(fh2))
+    print(process_time()-start)
+    print(gpx)

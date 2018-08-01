@@ -45,11 +45,14 @@ class GPXTrackPoint:
     def time(self, parser: Callable = parse_time)->datetime:
         return parser(self._time)
 
-    def to_xml(self, fh:IO)->None:
-        result: List[str] = ['\n<trkpt lat="%f" lon="%f">' % (self._lat, self._lon),
-                             '\n<time>', self._time, '</time>', '\n</trkpt>']
-        for string in result:
-            fh.write(string)
+    def to_xml(self)->str:
+        return ''.join(['\n<trkpt lat="%f" lon="%f">'
+                        % (self._lat, self._lon),
+                        '\n<time>', self._time,
+                        '</time>\n</trkpt>'])
+
+    def _write_to_file(self, fh: IO)->None:
+        fh.write(self.to_xml())
 
 
 if __name__ == '__main__':
@@ -61,5 +64,5 @@ if __name__ == '__main__':
     print('p1:', p1)
     print('p1.latitude=%s, p1.longitude=%s, p1.time=%s' %
           (p1.latitude, p1.longitude, p1.time))
-
+    print(p0.to_xml())
 

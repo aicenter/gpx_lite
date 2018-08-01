@@ -86,7 +86,7 @@ class GPX:
     def remove(self, item: GPXTrack):
         self._tracks.remove(item)
 
-    def to_xml(self, fh: IO)->None:
+    def write_to_file(self, fh: IO)->None:
         version: str = self.version if self.version else '1.1'
         creator: str = self.creator if self.creator else 'gpx-lite.py'
         version_ns: str = version.replace('.', '/')
@@ -99,10 +99,9 @@ class GPX:
                              'creator="%s">' % creator]
         for string in result:
             fh.write(string)
-        with tqdm(total = len(self._tracks), desc="Saving gpx", unit='track') as pbar:
-        #for track in tqdm(self._tracks, total=len(self._tracks), desc="Saving gpx", unit='track'):
+        with tqdm(total=len(self._tracks), desc="Saving gpx", unit='track') as pbar:
             for track in self._tracks:
-                track.to_xml(fh)
+                track._write_to_file(fh)
                 pbar.update(1)
         fh.write('\n</gpx>')
 

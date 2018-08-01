@@ -57,14 +57,13 @@ class GPXTrackSegment:
         """
         return len(self._points)
 
-    def to_xml(self, fh:IO)->None:
+    def _write_to_file(self, fh:IO)->None:
         fh.write('\n<trkseg>')
         for pt in self._points:
-            pt.to_xml(fh)
+            pt._write_to_file(fh)
         fh.write('\n</trkseg>')
 
     def sort_by_time(self)->None:
-        #print('Sorting ', len(self._points))
         self._points.sort(key=lambda pt: pt._time)
 
     def clone(self):
