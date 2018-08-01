@@ -143,8 +143,8 @@ if __name__ == '__main__':
     print('Iterator')
     for t in gpx:
         print(t)
-
+    print(track1 in gpx)
     gpx.remove(track3)
-    print('.tracks after 1 track removed: ', gpx.tracks)
+    print('tracks after 1 track removed: ', gpx.tracks)
 
 

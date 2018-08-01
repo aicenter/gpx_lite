@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="gpx-lite",
-    version="0.0.3",
+    version="0.0.5",
     author='Olga Kholkovskaia',
     author_email='olga.kholkovskaia@gmail.com',
     license='Apache License, Version 2.0',

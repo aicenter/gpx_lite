@@ -12,13 +12,12 @@ class GPXTrackSegment:
         self._points = points if points else []
 
     def __repr__(self)-> str:
-        return 'GPXTrackSegment(%s)(points=%s)' % \
-               (len(self._points), self._points)
+        return '<GPXTrackSegment [..%s points..]>' % len(self._points)
 
     def __len__(self)-> int:
         return len(self._points)
 
-    def __getitem__(self, key:Union[int, slice])-> \
+    def __getitem__(self, key: Union[int, slice])-> \
             Union[GPXTrackPoint, List[GPXTrackPoint]]:
         if isinstance(key, int):
             return self.points[key]
@@ -57,17 +56,27 @@ class GPXTrackSegment:
         """
         return len(self._points)
 
+    def sort_by_time(self)->None:
+        """
+        Chronologically sorts points in segment
+        :return:
+        """
+        self._points.sort(key=lambda pt: pt._time)
+
+
+    def clone(self):
+        """
+
+        :return: deepcopy of segment
+        """
+        return deepcopy(self)
+
     def _write_to_file(self, fh:IO)->None:
         fh.write('\n<trkseg>')
         for pt in self._points:
             pt._write_to_file(fh)
         fh.write('\n</trkseg>')
 
-    def sort_by_time(self)->None:
-        self._points.sort(key=lambda pt: pt._time)
-
-    def clone(self):
-        return deepcopy(self)
 
 
 if __name__ == '__main__':

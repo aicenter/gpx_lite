@@ -10,6 +10,7 @@ Parser only collects data from trk, trkseg, and trkpt gpx tags. All other tags a
 Resulting GPX structure contains track list - list of track segments made of track points with latitude, 
 longitude, and time.  
 
+For more information see https://github.com/aicenter/gpx_lite/wiki
 
 ### Prerequisites
 Python 3.4 or higher
