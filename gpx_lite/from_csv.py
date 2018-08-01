@@ -20,8 +20,7 @@ def read_data_from_csv(filepath: str, gpx: GPX, id_dict: Dict[str, int])->None:
     :param id_dict: dictionary, maps car_id to track position in gpx tracks list.
     :return:
     """
-    iter: Iterable = roadmaptools.inout.load_csv(filepath)
-    for row in iter:
+    for row in roadmaptools.inout.load_csv(filepath):
         car_id = row[1]
         point = GPXTrackPoint(float(row[3]), float(row[4]), row[5])
         if car_id not in id_dict.keys():

@@ -26,6 +26,15 @@ class GPXTrackPoint:
         self._lon: float = lon
         self._time: str = time
 
+    def __eq__(self, other: 'GPXTrackPoint')->bool:
+        if self._lat != other._lat:
+            return False
+        if self._lon != other._lon:
+            return False
+        if self._time != other._time:
+            return False
+        return True
+
     def __repr__(self)->str:
         return '<GPXTrackPoint(%f, %f, %s)>' % \
                (self._lat, self._lon, self._time)
@@ -61,8 +70,14 @@ if __name__ == '__main__':
     print('p0: ',p0)
     p1 = GPXTrackPoint(70.024596, 41.4547907,
                        '2017-02-22T07:25:02Z')
+
+    p2 = GPXTrackPoint(70.016978, 41.3749454,
+                       '2016-12-22T11:50:02Z')
     print('p1:', p1)
     print('p1.latitude=%s, p1.longitude=%s, p1.time=%s' %
           (p1.latitude, p1.longitude, p1.time))
     print(p0.to_xml())
+
+    print(p0 == p2)
+    print(p1 == p2)
 

@@ -46,7 +46,7 @@ def measure_save1(fname: str)->None:
     with open(fname, 'r') as xml_file:
         parser = Parser(xml_file)
         gpx = parser.parse()
-        out_name: str = fname +'.saved.gpx',
+        out_name: str = fname +'.saved.gpx'
         save(out_name, gpx)
         remove(out_name)
 
@@ -56,6 +56,8 @@ def measure_save1(fname: str)->None:
 #     with open(fname, 'r') as xml_file:
 #         parser =  OriginalParser(xml_file)
 #     parser.parse()
+
+# xml parser out of error exception:  xml.etree.ElementTree.ParseError:
 
 
 @timer
