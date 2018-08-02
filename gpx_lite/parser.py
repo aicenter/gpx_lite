@@ -1,4 +1,4 @@
-from typing import IO, Callable, List, Dict, TextIO
+from typing import IO, Callable, List, Dict
 from xml.etree.ElementTree import ElementTree, iterparse
 from os import fstat
 from tqdm import tqdm
@@ -32,8 +32,8 @@ class GPXParser:
 
     __slots__ = ('_gpx', '_source')
 
-    def __init__(self, file: TextIO)->None:
-        self._source: TextIO = file
+    def __init__(self, file: IO)->None:
+        self._source: IO = file
         self._gpx: GPX = GPX()
 
     def parse(self, xml_parser: Callable = parse_xml)->GPX:
