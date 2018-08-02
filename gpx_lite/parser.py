@@ -4,11 +4,11 @@ from os import fstat
 from tqdm import tqdm
 
 from gpx_lite.gpx import GPX, GPXTrack
-from gpx_lite.gpxtrackpoint import GPXTrackPoint
+#from gpx_lite.gpxtrackpoint import GPXTrackPoint
+from gpx_lite.new_trackpoint import NewTrackPoint as GPXTrackPoint
+
 from gpx_lite.gpxtracksegment import GPXTrackSegment
 from gpx_lite.utils import parse_xml
-
-
 
 
 
@@ -132,8 +132,8 @@ if __name__ == '__main__':
     with open(fn3, 'r') as fh:
         parser = GPXParser(fh)
         gpx = parser.iterparse()
-    np = sum(map(lambda tr: len(tr[0]), gpx))
-    print('Load gpx, %s points at %.2f sec' % (np, process_time() - start))
+    #np = sum(map(lambda tr: len(tr[0]), gpx))
+    print('Load gpx, %s points at %.2f sec' % (0, process_time() - start))
     #              ,
     # with open('/home/olga/Documents/GPX/save_raw.gpx', 'w') as fh2:
     #     print('Handler ', type(fh2))
