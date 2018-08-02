@@ -3,7 +3,6 @@ from xml.etree.ElementTree import ElementTree, iterparse
 from os import fstat
 from tqdm import tqdm
 
-
 from gpx_lite.gpx import GPX, GPXTrack
 from gpx_lite.gpxtrackpoint import GPXTrackPoint
 from gpx_lite.gpxtracksegment import GPXTrackSegment
@@ -130,13 +129,14 @@ if __name__ == '__main__':
 
     start = process_time()
 
-    with open(fn2, 'r') as fh:
+    with open(fn3, 'r') as fh:
         parser = GPXParser(fh)
         gpx = parser.iterparse()
-    print('Load gpx %.2f sec' % (process_time() - start))
+    np = sum(map(lambda tr: len(tr[0]), gpx))
+    print('Load gpx, %s points at %.2f sec' % (np, process_time() - start))
     #              ,
-    with open('/home/olga/Documents/GPX/save_raw.gpx', 'w', buffering=16*1024) as fh2:
-        print('Handler ', type(fh2))
-        print(gpx.write_to_file(fh2))
-    print(process_time()-start)
-    print(gpx)
+    # with open('/home/olga/Documents/GPX/save_raw.gpx', 'w') as fh2:
+    #     print('Handler ', type(fh2))
+    #     gpx.write_to_file(fh2)
+    # print(process_time()-start)
+    # print(gpx)

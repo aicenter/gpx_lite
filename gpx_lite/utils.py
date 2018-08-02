@@ -3,9 +3,9 @@ from typing import Callable
 from re import sub
 import xml.etree.ElementTree as ET
 
+
 def parse_time(string: str, parser: Callable = datetime.strptime)->datetime:
     """
-
     :param string: date and time as a string
     :param parser: function to convert string to datetime
     :return: datetime.datetime

@@ -19,7 +19,6 @@ def timer(func: Callable)->Callable:
         best_time = min(timeit.Timer(lambda: func(*args, **kwargs)).repeat(repeat=10, number=1))
         print(*args)
         print('%.2f Mbs in %.2f seconds' % (path.getsize(args[0])/MB, best_time))
-
         return best_time
     return wrapper
 
@@ -104,6 +103,6 @@ RESULTS_DIR = "/home/olga/Documents/GPX/test_results"
 #measure_time(measure_conversion, TEST_DIR, RESULTS_DIR,  'try_except_conv_')
 #measure_time(measure_save1, TEST_DIR, RESULTS_DIR, 'save_xml_')
 
-measure_load1_iter("/home/olga/Documents/GPX/save_raw.gpx") # time =  5.3
+#measure_load1_iter("/home/olga/Documents/GPX/save_raw.gpx") # time =  5.3
 #measure_load1_iter("/home/olga/Documents/GPX/traces-raw.gpx") # time =  5.3
 measure_load1_iter("/home/olga/Documents/GPX/liftago.gpx") # time =  5.3
