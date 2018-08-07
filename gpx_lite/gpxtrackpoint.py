@@ -35,6 +35,36 @@ class GPXTrackPoint:
             return False
         return True
 
+    def time_difference(self, track_point):
+        #code from https://github.com/tkrajina/gpxpy/tree/master/gpxpy
+        """
+        Get time difference between specified point and this point.
+        Parameters
+        ----------
+        track_point : GPXTrackPoint
+        Returns
+        ----------
+        time_difference : float
+            Time difference returned in seconds
+        """
+        if not self.time or not track_point or not track_point.time:
+            return None
+
+        time_1 = self.time
+        time_2 = track_point.time
+
+        if time_1 == time_2:
+            return 0
+
+        if time_1 > time_2:
+            delta = time_1 - time_2
+        else:
+            delta = time_2 - time_1
+
+        if delta is None:
+            return None
+        return (delta.days * 86400) + delta.seconds
+
     def __repr__(self) -> str:
         return '<GPXTrackPoint(%f, %f, %s)>' % \
                (self._lat, self._lon, self._time)
